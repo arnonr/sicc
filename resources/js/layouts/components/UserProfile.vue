@@ -17,13 +17,19 @@ const logout = () => {
 
   // Remove "accessToken" from localStorage
   localStorage.removeItem("accessToken");
-  router.push("/login").then(() => {
-    // Remove "userAbilities" from localStorage
-    localStorage.removeItem("userAbilities");
 
-    // Reset ability to initial ability
-    ability.update(initialAbility);
-  });
+  localStorage.removeItem("userAbilities");
+  ability.update(initialAbility);
+
+  router.go("/home");
+
+  // router.push("/home").then(() => {
+  //   // Remove "userAbilities" from localStorage
+  //   localStorage.removeItem("userAbilities");
+
+  //   // Reset ability to initial ability
+  //   ability.update(initialAbility);
+  // });
 };
 </script>
 
@@ -77,7 +83,8 @@ const logout = () => {
     <span
       class="ml-2 font-weight-bold cursor-pointer d-none d-md-inline"
       style="font-size: 0.8em"
-      > {{ userData.fullName }}</span
+    >
+      {{ userData.fullName }}</span
     >
   </div>
   <!-- activator="parent" -->
