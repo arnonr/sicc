@@ -69,8 +69,8 @@ const dialogModelValueUpdate = val => {
               cols="12"
               md="6"
             >
+                <!-- v-model="userData.fullName.split(' ')[0]" -->
               <VTextField
-                v-model="userData.fullName.split(' ')[0]"
                 label="first Name"
               />
             </VCol>
@@ -80,8 +80,9 @@ const dialogModelValueUpdate = val => {
               cols="12"
               md="6"
             >
+
+            <!-- v-model="userData.fullName.split(' ')[1]" -->
               <VTextField
-                v-model="userData.fullName.split(' ')[1]"
                 label="Last Name"
               />
             </VCol>

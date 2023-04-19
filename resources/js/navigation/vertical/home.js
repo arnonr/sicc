@@ -6,6 +6,8 @@ export default [
         // component: () => import("@/pages/home.vue"),
         // to: 'dashboards-analytics',
         icon: { icon: 'tabler-home' },
+        action: 'read',
+        subject: 'Auth',
     },
   ]
   

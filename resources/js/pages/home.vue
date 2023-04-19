@@ -203,3 +203,11 @@ button.splide__pagination__page.is-active {
     </main>
   </div>
 </template>
+
+
+<route lang="yaml">
+  meta:
+    action: read
+    subject: Auth
+  </route>
+  
