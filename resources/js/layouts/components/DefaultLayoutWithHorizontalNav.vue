@@ -1,5 +1,6 @@
 <script setup>
 import navItems from "@/navigation/horizontal";
+import { isUserLoggedIn } from "@/router/utils";
 import { useThemeConfig } from "@core/composable/useThemeConfig";
 import { themeConfig } from "@themeConfig";
 
@@ -7,6 +8,7 @@ import logoSCI from "@images/logos/logo-sci.jpeg";
 // Components
 import Footer from "@/layouts/components/Footer.vue";
 import NavBarI18n from "@/layouts/components/NavBarI18n.vue";
+import NavbarThemeSwitcher from "@/layouts/components/NavbarThemeSwitcher.vue";
 import TopFooter from "@/layouts/components/TopFooter.vue";
 import UserProfile from "@/layouts/components/UserProfile.vue";
 import { HorizontalNavLayout } from "@layouts";
@@ -15,6 +17,7 @@ import AdminNav from "./AdminNav.vue";
 // import logoSCI from '@images/logos/logo-sci.jpeg'
 
 const { appRouteTransition } = useThemeConfig();
+const isLoggedIn = isUserLoggedIn();
 </script>
 
 <template>
@@ -51,6 +54,7 @@ const { appRouteTransition } = useThemeConfig();
           <VImg :src="logoSCI" :width="70" aspect-ratio="16/9" />
         </VCol>
         <VCol cols="12" class="pb-0" align="center" justify="center">
+          <NavbarThemeSwitcher />
           <UserProfile />
           <NavBarI18n />
         </VCol>
@@ -66,14 +70,13 @@ const { appRouteTransition } = useThemeConfig();
 
     <!-- 👉 Footer -->
 
-
     <TopFooter />
     <template #footer>
       <Footer />
     </template>
 
     <!-- 👉 Customizer -->
-    <TheCustomizer />
-    <AdminNav />
+    <!-- <TheCustomizer /> -->
+    <AdminNav v-if="isLoggedIn" />
   </HorizontalNavLayout>
 </template>

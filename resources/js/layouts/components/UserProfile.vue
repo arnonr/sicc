@@ -1,8 +1,11 @@
 <script setup>
 import { initialAbility } from "@/plugins/casl/ability";
 import { useAppAbility } from "@/plugins/casl/useAppAbility";
-const { t } = useI18n()
+import { isUserLoggedIn } from "@/router/utils";
+const { t } = useI18n();
 // import userIcon from "@images/avatars/user_icon.png";
+
+const isLoggedIn = isUserLoggedIn();
 
 const router = useRouter();
 const ability = useAppAbility();
@@ -33,13 +36,14 @@ const logout = () => {
     bordered
     color="success"
   > -->
-  <div class="d-inline" id="menu-activator">
-    <VAvatar
-      class="cursor-pointer"
-      color="primary"
-      variant="tonal"
-      size="20"
-    >
+
+  <!-- Before Login -->
+  <div
+    class="d-inline"
+    v-if="!isLoggedIn"
+    @click="$router.push({ name: 'login' })"
+  >
+    <VAvatar class="cursor-pointer" color="primary" variant="tonal" size="20">
       <!-- <VImg
       v-if="userData && userData.avatar"
       :src="userIcon"
@@ -54,6 +58,26 @@ const logout = () => {
       class="ml-2 font-weight-bold cursor-pointer d-none d-md-inline"
       style="font-size: 0.8em"
       >{{ t("Sign In") }}</span
+    >
+  </div>
+  <!-- End -->
+  <!--  -->
+  <div class="d-inline" id="menu-activator" v-if="isLoggedIn">
+    <VAvatar class="cursor-pointer" color="primary" variant="tonal" size="20">
+      <!-- <VImg
+      v-if="userData && userData.avatar"
+      :src="userIcon"
+    /> -->
+      <!-- <VIcon v-else icon="tabler-user" /> -->
+      <VIcon icon="tabler-user" />
+      <!-- SECTION Menu -->
+
+      <!-- !SECTION -->
+    </VAvatar>
+    <span
+      class="ml-2 font-weight-bold cursor-pointer d-none d-md-inline"
+      style="font-size: 0.8em"
+      > {{ userData.fullName }}</span
     >
   </div>
   <!-- activator="parent" -->
@@ -87,10 +111,11 @@ const logout = () => {
         </template>
 
         <VListItemTitle class="font-weight-semibold">
-          <!-- {{ userData.fullName }} -->
+          {{ userData.fullName }}
+          <!-- Arnon -->
         </VListItemTitle>
         <VListItemSubtitle>
-          <!-- {{ userData.role }} -->
+          {{ userData.role }}
         </VListItemSubtitle>
       </VListItem>
 

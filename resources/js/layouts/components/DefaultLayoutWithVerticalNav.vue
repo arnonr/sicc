@@ -1,5 +1,6 @@
 <script setup>
 import navItems from '@/navigation/vertical';
+import { isUserLoggedIn } from "@/router/utils";
 import { useThemeConfig } from '@core/composable/useThemeConfig';
 
 // Components
@@ -16,6 +17,7 @@ import { VerticalNavLayout } from '@layouts';
 
 const { appRouteTransition, isLessThanOverlayNavBreakpoint } = useThemeConfig()
 const { width: windowWidth } = useWindowSize()
+const isLoggedIn = isUserLoggedIn();
 </script>
 
 <template>
@@ -71,7 +73,7 @@ const { width: windowWidth } = useWindowSize()
     </template>
 
     <!-- 👉 Customizer -->
-    <TheCustomizer />
-    <AdminNav />
+    <!-- <TheCustomizer /> -->
+    <AdminNav v-if="isLoggedIn" />
   </VerticalNavLayout>
 </template>
