@@ -21,7 +21,9 @@ const logout = () => {
   localStorage.removeItem("userAbilities");
   ability.update(initialAbility);
 
-  router.go("/home");
+  setTimeout(() => {
+    router.go("/home");
+  }, 1000);
 
   // router.push("/home").then(() => {
   //   // Remove "userAbilities" from localStorage
@@ -129,16 +131,16 @@ const logout = () => {
       <VDivider class="my-2" />
 
       <!-- 👉 Profile -->
-      <VListItem :to="{ name: 'apps-user-view-id', params: { id: 21 } }">
+      <!-- <VListItem :to="{ name: 'apps-user-view-id', params: { id: 21 } }">
         <template #prepend>
           <VIcon class="me-2" icon="tabler-user" size="22" />
         </template>
 
         <VListItemTitle>Profile</VListItemTitle>
-      </VListItem>
+      </VListItem> -->
 
       <!-- 👉 Settings -->
-      <VListItem
+      <!-- <VListItem
         :to="{
           name: 'pages-account-settings-tab',
           params: { tab: 'account' },
@@ -149,28 +151,28 @@ const logout = () => {
         </template>
 
         <VListItemTitle>Settings</VListItemTitle>
-      </VListItem>
+      </VListItem> -->
 
       <!-- 👉 Pricing -->
-      <VListItem :to="{ name: 'pages-pricing' }">
+      <!-- <VListItem :to="{ name: 'pages-pricing' }">
         <template #prepend>
           <VIcon class="me-2" icon="tabler-currency-dollar" size="22" />
         </template>
 
         <VListItemTitle>Pricing</VListItemTitle>
-      </VListItem>
+      </VListItem> -->
 
       <!-- 👉 FAQ -->
-      <VListItem :to="{ name: 'pages-faq' }">
+      <!-- <VListItem :to="{ name: 'pages-faq' }">
         <template #prepend>
           <VIcon class="me-2" icon="tabler-help" size="22" />
         </template>
 
         <VListItemTitle>FAQ</VListItemTitle>
-      </VListItem>
+      </VListItem> -->
 
       <!-- Divider -->
-      <VDivider class="my-2" />
+      <!-- <VDivider class="my-2" /> -->
 
       <!-- 👉 Logout -->
       <VListItem link @click="logout">
@@ -178,7 +180,7 @@ const logout = () => {
           <VIcon class="me-2" icon="tabler-logout" size="22" />
         </template>
 
-        <VListItemTitle>Logout</VListItemTitle>
+        <VListItemTitle>Sign Out</VListItemTitle>
       </VListItem>
     </VList>
   </VMenu>
