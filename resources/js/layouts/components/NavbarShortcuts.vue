@@ -19,6 +19,12 @@ const shortcuts = [
     to: { name: 'apps-user-list' },
   },
   {
+    icon: 'home',
+    title: 'Home',
+    subtitle: 'Home',
+    to: { name: 'home' },
+  },
+  {
     icon: 'tabler-layout',
     title: 'Dashboard',
     subtitle: 'Dashboard Analytics',

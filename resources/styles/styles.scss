@@ -39,7 +39,7 @@ body {
 }
 
 .layout-horizontal-nav .nav-link:not(.sub-item) a.router-link-active, .layout-horizontal-nav .nav-group:not(.sub-item).active > .popper-triggerer > .nav-group-label, .layout-nav-type-vertical .layout-vertical-nav .nav-link > .router-link-exact-active {
-    background: none !important;
+    // background: none !important;
     box-shadow: none;
     text-decoration: underline;
 }
