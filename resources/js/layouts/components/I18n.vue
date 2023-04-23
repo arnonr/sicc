@@ -23,19 +23,11 @@ const flag = ref(thFlag);
 </script>
 
 <style lang="scss">
-.v-btn__overlay,
-.v-btn__underlay {
-  // position: absolute;
-  top: -4px;
-  left: -8px;
-  width: 120%;
-  height: 120%;
-  // pointer-events: none;
-}
+
 </style>
 
 <template>
-  <VBtn icon variant="text" color="default" size="small" class="ml-5">
+  <VBtn icon variant="text" color="default" size="small" class="ml-3 pl-2">
     <!-- <VIcon
       icon="tabler-language"
       size="24"
