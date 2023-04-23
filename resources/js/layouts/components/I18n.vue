@@ -17,14 +17,11 @@ const props = defineProps({
 const emit = defineEmits(["change"]);
 
 const { locale } = useI18n({ useScope: "global" });
-console.log(locale);
 
-const flag = ref(thFlag);
+const flag = ref(locale.value === "th" ? thFlag : enFlag);
 </script>
 
-<style lang="scss">
-
-</style>
+<style lang="scss"></style>
 
 <template>
   <VBtn icon variant="text" color="default" size="small" class="ml-3 pl-2">
