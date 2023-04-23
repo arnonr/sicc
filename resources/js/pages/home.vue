@@ -15,19 +15,32 @@ const { t } = useI18n();
 const { mobile } = useDisplay();
 const isOverLay = ref(true);
 
-onMounted(() => {
-  console.log(mobile.value); // false
-});
-
-const options = {
-  type: "loop",
+const options = ref({
+  // type: "loop",
+  // perPage: 1,
+  // rewind: true,
   cover: true,
   heightRatio: 0.2,
   speed: 2000,
   wheelSleep: 0,
   autoplay: "play",
+  // autoplay: 'pause',
+  // start: 0,  
+  // lazyLoad: 'nearby'
   // arrows: false,
-};
+});
+
+onMounted(() => {
+  // console.log(mobile.value); // false
+  // options.value.start = 1;
+
+  // const splide = ref();
+
+  // if (splide.value && splide.value.splide) {
+  //   splide.value.go(2);
+  //   console.log(splide.value.splide.length);
+  // }
+});
 
 const cardIcon = [
   { title: "Sample Submission", icon: icon1 },
@@ -53,6 +66,7 @@ const fetchBanners = () => {
       if (response.data.message == "success") {
         banners.value = response.data.data;
         isOverLay.value = false;
+        // options.value.type = "loop";
       } else {
         console.log("error");
       }
@@ -62,7 +76,6 @@ const fetchBanners = () => {
       isOverLay.value = false;
     });
 };
-
 fetchBanners();
 
 const currentTab = ref(0);
@@ -73,7 +86,6 @@ const lang = ref("th");
 if (localStorage.getItem("currentLang") === "en") {
   lang.value = localStorage.getItem("currentLang");
 }
-
 </script>
 <style lang="scss">
 button.splide__pagination__page.is-active {
@@ -129,8 +141,9 @@ button.splide__pagination__page.is-active {
 <template>
   <div>
     <!-- Slide -->
-    <Splide :options="options" aria-label="Slide">
-      <SplideSlide data-splide-interval="3000" v-for="bn in banners">
+    <Splide :options="options" aria-label="Slide" ref="splide">
+      <SplideSlide data-splide-interval="2000" v-for="bn in banners">
+        <!-- :data-splide-lazy="lang == 'th' ? bn.banner_file : bn.banner_en_file" -->
         <img
           :src="lang == 'th' ? bn.banner_file : bn.banner_en_file"
           :alt="lang == 'th' ? bn.banner_title : bn.banner_en_title"
