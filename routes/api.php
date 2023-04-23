@@ -3,9 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\BannerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,4 +38,14 @@ Route::group(['prefix' => 'user'], function () {
     Route::post('/', [UserController::class, 'add']);
     Route::put('/{id}', [UserController::class, 'edit']);
     Route::delete('/{id}', [UserController::class, 'delete']);
+});
+
+
+Route::group(['prefix' => 'banner'], function () {
+  Route::put('/level/{id}', [BannerController::class, 'editLevel']);
+  Route::get('/{id}', [BannerController::class, 'get']);
+  Route::get('/', [BannerController::class, 'getAll']);
+  Route::post('/', [BannerController::class, 'add']);
+  Route::put('/{id}', [BannerController::class, 'edit']);
+  Route::delete('/{id}', [BannerController::class, 'delete']);
 });
