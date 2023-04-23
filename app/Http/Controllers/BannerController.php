@@ -69,7 +69,7 @@ class BannerController extends Controller
             }
             $items = $items->orderBy($request->orderBy, $order);
         }else{
-            $items = $items->orderBy('id', 'desc');
+            $items = $items->orderBy('level', 'desc');
         }
 
         $count = $items->count();
