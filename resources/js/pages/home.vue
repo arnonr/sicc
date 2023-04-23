@@ -133,7 +133,7 @@ button.splide__pagination__page.is-active {
     <!-- End Icon -->
 
     <!-- Main -->
-    <main class="layout-page-content mt-6">
+    <main class="layout-page-content mt-6  mb-6">
       <v-row>
         <v-col>
           <h2>{{ t("News") }}</h2>

@@ -100,41 +100,41 @@ const headerValues = computed(() => {
           <!-- 👉 Skin -->
           <ul class="admin-nav-items">
             <li class="admin-nav-li">
-              <a href="#" class="admin-nav-link">
+              <a @click="$router.push({ name: 'admin-banner' })" class="admin-nav-link cursor-pointer">
                 <VIcon icon="tabler-slideshow" size="24" />
-                <span class="admin-nav-item-title"> Slide</span></a
+                <span class="admin-nav-item-title"> Banner</span></a
               >
               <hr class="admin-nav-hr" />
             </li>
             <li class="admin-nav-li">
-              <a href="#" class="admin-nav-link">
+              <a @click="$router.push({ name: 'admin-banner' })" class="admin-nav-link cursor-pointer">
                 <VIcon icon="tabler-augmented-reality" size="24" />
                 <span class="admin-nav-item-title"> Service</span></a
               >
               <hr class="admin-nav-hr" />
             </li>
             <li class="admin-nav-li">
-              <a href="#" class="admin-nav-link">
+              <a @click="$router.push({ name: 'admin-banner' })" class="admin-nav-link cursor-pointer">
                 <VIcon icon="tabler-news" size="24" />
                 <span class="admin-nav-item-title"> News</span></a
               >
             </li>
             <li class="admin-nav-li">
-              <a href="#" class="admin-nav-link">
+              <a @click="$router.push({ name: 'admin-banner' })" class="admin-nav-link cursor-pointer">
                 <VIcon icon="tabler-category" size="24" />
                 <span class="admin-nav-item-title"> News Type</span></a
               >
               <hr class="admin-nav-hr" />
             </li>
             <li class="admin-nav-li">
-              <a href="#" class="admin-nav-link">
+              <a @click="$router.push({ name: 'admin-banner' })" class="admin-nav-link cursor-pointer">
                 <VIcon icon="tabler-book-2" size="24" />
                 <span class="admin-nav-item-title"> About Us</span></a
               >
               <hr class="admin-nav-hr" />
             </li>
             <li class="admin-nav-li">
-              <a href="#" class="admin-nav-link">
+              <a @click="$router.push({ name: 'admin-banner' })" class="admin-nav-link cursor-pointer">
                 <VIcon icon="tabler-address-book" size="24" />
                 <span class="admin-nav-item-title"> Contact Us</span></a
               >

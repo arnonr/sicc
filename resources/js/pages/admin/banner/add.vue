@@ -1,0 +1,246 @@
+<script setup>
+import { requiredValidator } from "@validators";
+
+import router from "../../../router";
+import { useBannerStore } from "./useBannerStore";
+// const route = useRoute();
+
+const bannerStore = useBannerStore();
+
+const item = reactive({
+  id: null,
+  title: "",
+  title_en: "",
+  link_url: "",
+  link_url_en: "",
+  is_publish: 1,
+  banner_file: "",
+  banner_file_en: "",
+});
+const isOverlay = ref(false);
+const isFormValid = ref(false);
+const refForm = ref();
+
+const onSubmit = () => {
+  isOverlay.value = true;
+  refForm.value?.validate().then(({ valid }) => {
+    if (valid) {
+      bannerStore
+        .addBanner({
+          ...item,
+          banner_file: item.banner_file != null ? item.banner_file[0] : null,
+          banner_en_file:
+            item.banner_en_file != null ? item.banner_en_file[0] : null,
+        })
+        .then((response) => {
+          if (response.data.message == "success") {
+            localStorage.setItem("added", 1);
+            nextTick(() => {
+              // refForm.value?.reset();
+              // refForm.value?.resetValidation();
+              router.push({
+                path: "/admin/banner/view/" + response.data.data.id,
+              });
+            });
+          } else {
+            isOverlay.value = false;
+            console.log("error");
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+          //   isOverLay.value = false;
+        });
+    }
+    isOverlay.value = false;
+  });
+};
+</script>
+
+<template>
+  <main class="layout-page-content mb-6 mt-6">
+    <section>
+      <!-- Search -->
+      <VRow>
+        <VCol>
+          <h2>ADD Banner</h2>
+          <hr />
+        </VCol>
+      </VRow>
+      <VRow class="mt-6">
+        <VCol>
+          <VCard title="" class="pb-5 pt-5">
+            <VCardText>
+              <VForm
+                ref="refForm"
+                v-model="isFormValid"
+                @submit.prevent="onSubmit"
+              >
+                <VRow>
+                  <VCol cols="12">
+                    <h3>THA</h3>
+                  </VCol>
+
+                  <VCol cols="12">
+                    <VRow no-gutters>
+                      <VCol cols="12" md="3">
+                        <label for="link_url">ไฟล์ Banner (1280*768)</label>
+                      </VCol>
+
+                      <VCol cols="12" md="9">
+                        <VFileInput
+                          label="Upload Banner"
+                          :rules="[requiredValidator]"
+                          id="banner_file"
+                          v-model="item.banner_file"
+                          persistent-placeholder
+                        />
+                      </VCol>
+                    </VRow>
+                  </VCol>
+
+                  <VCol cols="12">
+                    <VRow no-gutters>
+                      <VCol cols="12" md="3">
+                        <label for="title">ชื่อ Banner</label>
+                      </VCol>
+
+                      <VCol cols="12" md="9">
+                        <VTextField
+                          id="title"
+                          :rules="[requiredValidator]"
+                          v-model="item.title"
+                          placeholder="Title"
+                          persistent-placeholder
+                        />
+                      </VCol>
+                    </VRow>
+                  </VCol>
+
+                  <VCol cols="12">
+                    <VRow no-gutters>
+                      <VCol cols="12" md="3">
+                        <label for="link_url">ลิงค์</label>
+                      </VCol>
+
+                      <VCol cols="12" md="9">
+                        <VTextField
+                          id="link_url"
+                          v-model="item.link_url"
+                          placeholder="Link"
+                          persistent-placeholder
+                        />
+                      </VCol>
+                    </VRow>
+                  </VCol>
+
+                  <VCol cols="12">
+                    <VRow no-gutters>
+                      <!-- 👉 Mobile -->
+                      <VCol cols="12" md="3">
+                        <label for="is_publish">สถานะ</label>
+                      </VCol>
+
+                      <VCol cols="12" md="9">
+                        <VSelect
+                          id="is_publish"
+                          v-model="item.is_publish"
+                          label="Pubish"
+                          :items="[
+                            { title: 'Publish', value: 1 },
+                            { title: 'UnPublish', value: 0 },
+                          ]"
+                        />
+                      </VCol>
+                    </VRow>
+                  </VCol>
+
+                  <VCol cols="12">
+                    <hr />
+                  </VCol>
+
+                  <VCol cols="12">
+                    <h3>ENG</h3>
+                  </VCol>
+
+                  <VCol cols="12">
+                    <VRow no-gutters>
+                      <VCol cols="12" md="3">
+                        <label for="link_url_en">ไฟล์ Banner (1280*768)</label>
+                      </VCol>
+
+                      <VCol cols="12" md="9">
+                        <VFileInput
+                          label="Upload Banner"
+                          id="banner_en_file"
+                          v-model="item.banner_en_file"
+                          persistent-placeholder
+                        />
+                      </VCol>
+                    </VRow>
+                  </VCol>
+
+                  <VCol cols="12">
+                    <VRow no-gutters>
+                      <VCol cols="12" md="3">
+                        <label for="title_en">ชื่อ Banner</label>
+                      </VCol>
+
+                      <VCol cols="12" md="9">
+                        <VTextField
+                          id="title_en"
+                          v-model="item.title_en"
+                          placeholder="Title"
+                          persistent-placeholder
+                        />
+                      </VCol>
+                    </VRow>
+                  </VCol>
+
+                  <VCol cols="12">
+                    <VRow no-gutters>
+                      <VCol cols="12" md="3">
+                        <label for="link_url_en">ลิงค์</label>
+                      </VCol>
+
+                      <VCol cols="12" md="9">
+                        <VTextField
+                          id="link_url_en"
+                          v-model="item.link_url_en"
+                          placeholder="Link"
+                          persistent-placeholder
+                        />
+                      </VCol>
+                    </VRow>
+                  </VCol>
+
+                  <!-- 👉 submit and reset button -->
+                  <VCol offset-md="3" cols="12" md="9" class="d-flex gap-4">
+                    <VBtn type="submit"> Submit </VBtn>
+                    <!-- <VBtn color="secondary" variant="tonal" type="reset">
+                      Reset
+                    </VBtn> -->
+                  </VCol>
+                </VRow>
+              </VForm>
+            </VCardText>
+            <VOverlay
+              v-model="isOverlay"
+              contained
+              persistent
+              class="align-center justify-center"
+            >
+              <VProgressCircular indeterminate />
+            </VOverlay>
+          </VCard>
+        </VCol>
+      </VRow>
+    </section>
+  </main>
+</template>
+
+<route lang="yaml">
+meta:
+  action: read
+  subject: Auth
+</route>
