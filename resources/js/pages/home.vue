@@ -1,6 +1,4 @@
 <script setup>
-import banner1 from "@images/banners/banner.jpg";
-import banner2 from "@images/banners/banner2.jpg";
 import icon1 from "@images/icons/home/icon1.png";
 import icon2 from "@images/icons/home/icon2.png";
 import icon3 from "@images/icons/home/icon3.png";
@@ -9,10 +7,13 @@ import pages1 from "@images/pages/1.png";
 import { Splide, SplideSlide } from "@splidejs/vue-splide";
 import "@splidejs/vue-splide/css";
 import { useDisplay } from "vuetify";
+import { useHomeStore } from "./useHomeStore";
 // import { defineComponent } from "vue";
+const homeStore = useHomeStore();
 const { t } = useI18n();
 
 const { mobile } = useDisplay();
+const isOverLay = ref(true);
 
 onMounted(() => {
   console.log(mobile.value); // false
@@ -35,14 +36,44 @@ const cardIcon = [
   { title: "Department Facility", icon: icon4 },
 ];
 
-const banner = [
-  { title: "banner1", banner_file: banner1 },
-  { title: "banner2", banner_file: banner2 },
-];
+// const banner = [
+//   { title: "banner1", banner_file: banner1 },
+//   { title: "banner2", banner_file: banner2 },
+// ];
+
+// 👉 Fetching Banner
+const banners = ref([]);
+const fetchBanners = () => {
+  isOverLay.value = true;
+  homeStore
+    .fetchBanners({
+      is_publish: 1,
+    })
+    .then((response) => {
+      if (response.data.message == "success") {
+        banners.value = response.data.data;
+        isOverLay.value = false;
+      } else {
+        console.log("error");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      isOverLay.value = false;
+    });
+};
+
+fetchBanners();
 
 const currentTab = ref(0);
 const tabItemContent =
   "Candy canes donut chupa chups candy canes lemon drops oat cake wafer. Cotton candy candy canes marzipan carrot cake. Sesame snaps lemon drops candy marzipan donut brownie tootsie roll. Icing croissant bonbon biscuit gummi bears. Pudding candy canes sugar plum cookie chocolate cake powder croissant.";
+
+const lang = ref("th");
+if (localStorage.getItem("currentLang") === "en") {
+  lang.value = localStorage.getItem("currentLang");
+}
+
 </script>
 <style lang="scss">
 button.splide__pagination__page.is-active {
@@ -99,8 +130,11 @@ button.splide__pagination__page.is-active {
   <div>
     <!-- Slide -->
     <Splide :options="options" aria-label="Slide">
-      <SplideSlide data-splide-interval="3000" v-for="bn in banner">
-        <img :src="bn.banner_file" :alt="bn.title" />
+      <SplideSlide data-splide-interval="3000" v-for="bn in banners">
+        <img
+          :src="lang == 'th' ? bn.banner_file : bn.banner_en_file"
+          :alt="lang == 'th' ? bn.banner_title : bn.banner_en_title"
+        />
       </SplideSlide>
     </Splide>
     <!-- End Slide -->
@@ -133,7 +167,7 @@ button.splide__pagination__page.is-active {
     <!-- End Icon -->
 
     <!-- Main -->
-    <main class="layout-page-content mt-6  mb-6">
+    <main class="layout-page-content mt-6 mb-6">
       <v-row>
         <v-col>
           <h2>{{ t("News") }}</h2>
@@ -204,10 +238,8 @@ button.splide__pagination__page.is-active {
   </div>
 </template>
 
-
 <route lang="yaml">
-  meta:
-    action: read
-    subject: Auth
-  </route>
-  
+meta:
+  action: read
+  subject: Auth
+</route>
