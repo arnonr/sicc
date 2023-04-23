@@ -70,6 +70,30 @@ svg.font-weight-bold *{
 .top-footer{
     background-color: #eee;
 }
+
+div.admin-table {
+    table {
+      border-collapse: collapse;
+      border-spacing: 2px;
+    }
+    thead > tr {
+      background-color: #f3f2f7 !important;
+      border-bottom: solid #ebe9f1 2px;
+    }
+    tr:nth-child(odd) {
+      background-color: #fafafc;
+    }
+  
+    th, td {
+      border: 1px solid #ebe9f1;
+    }
+    .v-btn--icon {
+        border-radius: 6px;
+        min-width: 0;
+        padding: 0;
+    }
+}
+
 // text-decoration: underline;
 
 // .layout-horizontal-nav .nav-link a::before {
