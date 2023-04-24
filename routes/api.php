@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BannerController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\NewsTypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,4 +50,20 @@ Route::group(['prefix' => 'banner'], function () {
   Route::post('/', [BannerController::class, 'add']);
   Route::put('/{id}', [BannerController::class, 'edit']);
   Route::delete('/{id}', [BannerController::class, 'delete']);
+});
+
+Route::group(['prefix' => 'news'], function () {
+  Route::get('/{id}', [NewsController::class, 'get']);
+  Route::get('/', [NewsController::class, 'getAll']);
+  Route::post('/', [NewsController::class, 'add']);
+  Route::put('/{id}', [NewsController::class, 'edit']);
+  Route::delete('/{id}', [NewsController::class, 'delete']);
+});
+
+Route::group(['prefix' => 'news-type'], function () {
+  Route::get('/{id}', [NewsTypeController::class, 'get']);
+  Route::get('/', [NewsTypeController::class, 'getAll']);
+  Route::post('/', [NewsTypeController::class, 'add']);
+  Route::put('/{id}', [NewsTypeController::class, 'edit']);
+  Route::delete('/{id}', [NewsTypeController::class, 'delete']);
 });
