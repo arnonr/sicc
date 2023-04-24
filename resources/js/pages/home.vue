@@ -4,8 +4,13 @@ import icon2 from "@images/icons/home/icon2.png";
 import icon3 from "@images/icons/home/icon3.png";
 import icon4 from "@images/icons/home/icon4.png";
 import pages1 from "@images/pages/1.png";
-import { Splide, SplideSlide } from "@splidejs/vue-splide";
-import "@splidejs/vue-splide/css";
+
+import { register } from "swiper/element/bundle";
+// import Swiper, { Navigation, Pagination } from 'swiper';
+// import "swiper/css";
+// import "swiper/css/navigation";
+// import "swiper/css/pagination";
+
 import { useDisplay } from "vuetify";
 import { useHomeStore } from "./useHomeStore";
 // import { defineComponent } from "vue";
@@ -15,31 +20,31 @@ const { t } = useI18n();
 const { mobile } = useDisplay();
 const isOverLay = ref(true);
 
-const options = ref({
-  // type: "loop",
-  // perPage: 1,
-  // rewind: true,
-  cover: true,
-  heightRatio: 0.2,
-  speed: 2000,
-  wheelSleep: 0,
-  autoplay: "play",
-  // autoplay: 'pause',
-  // start: 0,  
-  // lazyLoad: 'nearby'
-  // arrows: false,
-});
+register();
 
 onMounted(() => {
-  // console.log(mobile.value); // false
-  // options.value.start = 1;
-
-  // const splide = ref();
-
-  // if (splide.value && splide.value.splide) {
-  //   splide.value.go(2);
-  //   console.log(splide.value.splide.length);
-  // }
+  // const swiperEl = document.querySelector("swiper-container");
+  // // swiper parameters
+  // const swiperParams = {
+  //   slidesPerView: 1,
+  //   breakpoints: {
+  //     640: {
+  //       slidesPerView: 2,
+  //     },
+  //     1024: {
+  //       slidesPerView: 1,
+  //     },
+  //   },
+  //   on: {
+  //     init() {
+  //       // ...
+  //     },
+  //   },
+  // };
+  // // now we need to assign all parameters to Swiper element
+  // Object.assign(swiperEl, swiperParams);
+  // // and now initialize it
+  // swiperEl.initialize();
 });
 
 const cardIcon = [
@@ -48,11 +53,6 @@ const cardIcon = [
   { title: "Direction", icon: icon3 },
   { title: "Department Facility", icon: icon4 },
 ];
-
-// const banner = [
-//   { title: "banner1", banner_file: banner1 },
-//   { title: "banner2", banner_file: banner2 },
-// ];
 
 // 👉 Fetching Banner
 const banners = ref([]);
@@ -79,13 +79,17 @@ const fetchBanners = () => {
 fetchBanners();
 
 const currentTab = ref(0);
-const tabItemContent =
-  "Candy canes donut chupa chups candy canes lemon drops oat cake wafer. Cotton candy candy canes marzipan carrot cake. Sesame snaps lemon drops candy marzipan donut brownie tootsie roll. Icing croissant bonbon biscuit gummi bears. Pudding candy canes sugar plum cookie chocolate cake powder croissant.";
 
 const lang = ref("th");
 if (localStorage.getItem("currentLang") === "en") {
   lang.value = localStorage.getItem("currentLang");
 }
+
+// const swiper = new Swiper(".sicc-swiper", {
+//   speed: 400,
+//   spaceBetween: 100,
+//   modules: [Navigation, Pagination],
+// });
 </script>
 <style lang="scss">
 button.splide__pagination__page.is-active {
@@ -137,20 +141,50 @@ button.splide__pagination__page.is-active {
 .news-card {
   border: solid 1px #ddd;
 }
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+  font-size: 10px !important;
+  font-weight: 700px;
+}
+
 </style>
 <template>
   <div>
-    <!-- Slide -->
-    <Splide :options="options" aria-label="Slide" ref="splide">
-      <SplideSlide data-splide-interval="2000" v-for="bn in banners">
-        <!-- :data-splide-lazy="lang == 'th' ? bn.banner_file : bn.banner_en_file" -->
-        <img
-          :src="lang == 'th' ? bn.banner_file : bn.banner_en_file"
-          :alt="lang == 'th' ? bn.banner_title : bn.banner_en_title"
-        />
-      </SplideSlide>
-    </Splide>
-    <!-- End Slide -->
+    <!-- tp-Banner -->
+    <swiper-container
+      slides-per-view="1"
+      speed="500"
+      loop="true"
+      css-mode="true"
+      :navigation="'true'"
+      pagination="true"
+      scrollbar="true"
+    >
+      <swiper-slide v-for="bn in banners">
+        <a
+          :href="
+            lang == 'th'
+              ? bn.link_url != 'null'
+                ? bn.link_url
+                : '#'
+              : bn.link_url_en != 'null'
+              ? bn.link_url_en
+              : '#'
+          "
+          :alt="lang == 'th' ? bn.title : bn.title_en"
+          :title="lang == 'th' ? bn.title : bn.title_en"
+        >
+          <img
+            :src="lang == 'th' ? bn.banner_file : bn.banner_en_file"
+            :alt="lang == 'th' ? bn.banner_title : bn.banner_en_title"
+            style="width: 100%"
+          />
+        </a>
+      </swiper-slide>
+    </swiper-container>
+
+    <!-- End tp-Banner -->
 
     <!-- Icon -->
     <VRow
