@@ -114,13 +114,13 @@ const headerValues = computed(() => {
               <hr class="admin-nav-hr" />
             </li>
             <li class="admin-nav-li">
-              <a @click="$router.push({ name: 'admin-banner' })" class="admin-nav-link cursor-pointer">
+              <a @click="$router.push({ name: 'admin-news' })" class="admin-nav-link cursor-pointer">
                 <VIcon icon="tabler-news" size="24" />
                 <span class="admin-nav-item-title"> News</span></a
               >
             </li>
             <li class="admin-nav-li">
-              <a @click="$router.push({ name: 'admin-banner' })" class="admin-nav-link cursor-pointer">
+              <a @click="$router.push({ name: 'admin-news-type' })" class="admin-nav-link cursor-pointer">
                 <VIcon icon="tabler-category" size="24" />
                 <span class="admin-nav-item-title"> News Type</span></a
               >
