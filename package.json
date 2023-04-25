@@ -13,6 +13,7 @@
     "@floating-ui/dom": "1.0.4",
     "@splidejs/vue-splide": "^0.6.12",
     "@tabler/icons": "^1.97.0",
+    "@vuepic/vue-datepicker": "^4.5.0",
     "@vueuse/core": "^9.5.0",
     "@vueuse/math": "^9.5.0",
     "apexcharts-clevision": "^3.28.5",

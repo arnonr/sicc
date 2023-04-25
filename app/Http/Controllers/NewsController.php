@@ -34,7 +34,7 @@ class NewsController extends Controller
             'news.detail_en',
             'news.is_publish as is_publish',
             'news.deleted_at as delete_at',
-            'news.created_at as created_at',
+            DB::raw("DATE(news.created_at) AS created_at"),
             'news.created_by as created_by',
             'news.updated_at as updated_at',
             'news.updated_by as updated_by',
@@ -45,33 +45,33 @@ class NewsController extends Controller
         
 
         if ($request->id) {
-            $items->where('id',$request->id);
+            $items->where('news.id',$request->id);
         }
 
         if ($request->title) {
-            $items->where('title','LIKE',"%".$request->title."%");
+            $items->where('news.title','LIKE',"%".$request->title."%");
         }
 
         if ($request->title_en) {
-            $items->where('title_en','LIKE',"%".$request->title_en."%");
+            $items->where('news.title_en','LIKE',"%".$request->title_en."%");
         }
 
         if ($request->news_type_id) {
-            $items->where('news_type_id',$request->news_type_id);
+            $items->where('news.news_type_id',$request->news_type_id);
         }
 
         if ($request->is_publish) {
-            $items->where('is_publish',$request->is_publish);
+            $items->where('news.is_publish',$request->is_publish);
         }
 
         if ($request->created_at) {
-            $items->where('created_at',$request->created_at);
+            $items->whereDate('news.created_at',$request->created_at);
         }
 
         if($request->orderBy){
             $items = $items->orderBy($request->orderBy,$request->order);
         }else{
-            $items = $items->orderBy('created_at', 'desc');
+            $items = $items->orderBy('news.created_at', 'desc');
         }
 
         $count = $items->count();
@@ -110,7 +110,7 @@ class NewsController extends Controller
             'news.detail_en',
             'news.is_publish as is_publish',
             'news.deleted_at as delete_at',
-            'news.created_at as created_at',
+            DB::raw("DATE(news.created_at) AS created_at"),
             'news.created_by as created_by',
             'news.updated_at as updated_at',
             'news.updated_by as updated_by',

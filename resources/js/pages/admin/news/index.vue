@@ -3,6 +3,10 @@ import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 import { useNewsStore } from "./useNewsStore";
+
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+
 dayjs.extend(buddhistEra);
 
 const newsStore = useNewsStore();
@@ -54,7 +58,14 @@ const selectOptions = ref({
 // 👉 Fetching News
 const fetchItems = () => {
   isOverLay.value = true;
-  let search = { ...advancedSearch };
+  let search = {
+    ...advancedSearch,
+    created_at:
+      advancedSearch.created_at != ""
+        ? dayjs(advancedSearch.created_at).format("YYYY-MM-DD")
+        : undefined,
+  };
+  
 
   newsStore
     .fetchNewses({
@@ -93,7 +104,7 @@ const fetchNewsTypes = () => {
             value: d.id,
           };
         });
-        console.log(selectOptions.value.news_type)
+        console.log(selectOptions.value.news_type);
         isOverLay.value = false;
       } else {
         console.log("error");
@@ -123,6 +134,14 @@ if (localStorage.getItem("deleted") == 1) {
   isSnackbarVisible.value = true;
   localStorage.removeItem("deleted");
 }
+
+const format = (date) => {
+  const day = dayjs(date).locale("th").format("DD");
+  const month = dayjs(date).locale("th").format("MMM");
+  const year = date.getFullYear() + 543;
+
+  return `${day} ${month} ${year}`;
+};
 </script>
 
 <template>
@@ -131,7 +150,10 @@ if (localStorage.getItem("deleted") == 1) {
       <!-- Search -->
       <VRow>
         <VCol cols="12">
-          <VCard title="ค้นหา/Search">
+          <VCard
+            title="ค้นหา/Search"
+            style="overflow: inherit; position: inherit"
+          >
             <!-- 👉 Filters -->
             <VCardText>
               <VRow>
@@ -162,11 +184,20 @@ if (localStorage.getItem("deleted") == 1) {
                 </VCol>
 
                 <VCol cols="12" sm="6">
-                  <VTextField
+                  <VueDatePicker
                     v-model="advancedSearch.created_at"
-                    label="หัวข้อข่าว (EN)/Title EN"
-                    density="compact"
-                  />
+                    :enable-time-picker="false"
+                    locale="th"
+                    auto-apply
+                    :format="format"
+                  >
+                    <template #year-overlay-value="{ text }">
+                      {{ parseInt(text) + 543 }}
+                    </template>
+                    <template #year="{ year }">
+                      {{ year + 543 }}
+                    </template>
+                  </VueDatePicker>
                 </VCol>
 
                 <VCol cols="12">

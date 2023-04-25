@@ -3,7 +3,16 @@ import { requiredValidator } from "@validators";
 
 import router from "../../../router";
 import { useNewsStore } from "./useNewsStore";
+
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+
+import dayjs from "dayjs";
+import "dayjs/locale/th";
+import buddhistEra from "dayjs/plugin/buddhistEra";
 // const route = useRoute();
+
+dayjs.extend(buddhistEra);
 
 const newsStore = useNewsStore();
 
@@ -33,15 +42,41 @@ newsStore
   .then((response) => {
     if (response.data.message == "success") {
       selectOptions.value.news_types = response.data.data;
-      isOverLay.value = false;
+      isOverlay.value = false;
     } else {
       console.log("error");
     }
   })
   .catch((error) => {
     console.error(error);
-    isOverLay.value = false;
+    isOverlay.value = false;
   });
+
+const fetchNewsTypes = () => {
+  newsStore
+    .fetchNewsTypes({
+      is_publish: 1,
+    })
+    .then((response) => {
+      if (response.data.message == "success") {
+        selectOptions.value.news_types = response.data.data.map((d) => {
+          return {
+            title: d.title,
+            value: d.id,
+          };
+        });
+        console.log(selectOptions.value.news_type);
+        isOverlay.value = false;
+      } else {
+        console.log("error");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      isOverlay.value = false;
+    });
+};
+fetchNewsTypes();
 
 const onSubmit = () => {
   isOverlay.value = true;
@@ -71,11 +106,19 @@ const onSubmit = () => {
         })
         .catch((error) => {
           console.error(error);
-          //   isOverLay.value = false;
+          //   isOverlay.value = false;
         });
     }
     isOverlay.value = false;
   });
+};
+
+const format = (date) => {
+  const day = dayjs(date).locale("th").format("DD");
+  const month = dayjs(date).locale("th").format("MMM");
+  const year = date.getFullYear() + 543;
+
+  return `${day} ${month} ${year}`;
 };
 </script>
 
@@ -114,7 +157,7 @@ const onSubmit = () => {
                           id="news_type_id"
                           v-model="item.news_type_id"
                           label="News Type"
-                          :items="selectOptions.news_type"
+                          :items="selectOptions.news_types"
                         />
                       </VCol>
                     </VRow>
@@ -165,7 +208,6 @@ const onSubmit = () => {
                       <VCol cols="12" md="9">
                         <VTextField
                           id="detail"
-                          :rules="[requiredValidator]"
                           v-model="item.detail"
                           placeholder="Detail"
                           persistent-placeholder
@@ -191,6 +233,32 @@ const onSubmit = () => {
                             { title: 'UnPublish', value: 0 },
                           ]"
                         />
+                      </VCol>
+                    </VRow>
+                  </VCol>
+
+                  <VCol cols="12">
+                    <VRow no-gutters>
+                      <!-- 👉 Mobile -->
+                      <VCol cols="12" md="3">
+                        <label for="is_publish">วันที่ลงข่าว</label>
+                      </VCol>
+
+                      <VCol cols="12" md="9">
+                        <VueDatePicker
+                          v-model="item.created_at"
+                          :enable-time-picker="false"
+                          locale="th"
+                          auto-apply
+                          :format="format"
+                        >
+                          <template #year-overlay-value="{ text }">
+                            {{ parseInt(text) + 543 }}
+                          </template>
+                          <template #year="{ year }">
+                            {{ year + 543 }}
+                          </template>
+                        </VueDatePicker>
                       </VCol>
                     </VRow>
                   </VCol>
