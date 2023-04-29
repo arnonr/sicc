@@ -28,9 +28,10 @@ const onSubmit = () => {
         .then((response) => {
           if (response.data.message == "success") {
             localStorage.setItem("added", 1);
+            console.log("FREDOm")
             nextTick(() => {
               router.push({
-                path: "/admin/news-type",
+                path: "/admin/newsType",
               });
             });
           } else {
@@ -45,6 +46,9 @@ const onSubmit = () => {
     isOverlay.value = false;
   });
 };
+onMounted(() => {
+  window.scrollTo(0,0);
+});
 </script>
 
 <template>

@@ -10,6 +10,9 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
+
+import "froala-editor/css/froala_editor.pkgd.min.css";
+import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min.js";
 // const route = useRoute();
 
 dayjs.extend(buddhistEra);
@@ -26,10 +29,15 @@ const item = reactive({
   detail: "",
   detail_en: "",
   is_publish: 1,
+  created_at: dayjs(),
 });
 const isOverlay = ref(false);
 const isFormValid = ref(false);
 const refForm = ref();
+
+onMounted(() => {
+  initFroala();
+});
 
 const selectOptions = ref({
   news_types: [],
@@ -65,7 +73,6 @@ const fetchNewsTypes = () => {
             value: d.id,
           };
         });
-        console.log(selectOptions.value.news_type);
         isOverlay.value = false;
       } else {
         console.log("error");
@@ -86,15 +93,20 @@ const onSubmit = () => {
         .addNews({
           ...item,
           news_file: item.news_file != null ? item.news_file[0] : null,
+
           news_en_file:
-            item.banner_en_file != null ? item.news_en_file[0] : null,
+            item.news_en_file != null ? item.news_en_file[0] : null,
+
+          created_at:
+            item.created_at != ""
+              ? dayjs(item.created_at).format("YYYY-MM-DD")
+              : dayjs().format("YYYY-MM-DD"),
         })
         .then((response) => {
           if (response.data.message == "success") {
             localStorage.setItem("added", 1);
+            console.log("News Add Success")
             nextTick(() => {
-              // refForm.value?.reset();
-              // refForm.value?.resetValidation();
               router.push({
                 path: "/admin/news/view/" + response.data.data.id,
               });
@@ -120,8 +132,173 @@ const format = (date) => {
 
   return `${day} ${month} ${year}`;
 };
-</script>
 
+const initFroala = () => {
+  new FroalaEditor("#detail", {
+    height: 300,
+    // inlineMode: false,
+    pastePlain: true,
+    paragraphy: false,
+    quickInsertEnabled: false,
+    toolbarButtons: [
+      "undo",
+      "redo",
+      "fullscreen",
+      "|",
+      "fontSize",
+      "color",
+      "bold",
+      "italic",
+      "underline",
+      "inlineClass",
+      "|",
+      "paragraphFormat",
+      "align",
+      "outdent",
+      "indent",
+      "|",
+      "formatOL",
+      "formatUL",
+      "quote",
+      "-",
+      "insertLink",
+      "insertImage",
+      "insertVideo",
+      "insertFile",
+      "insertTable",
+      "|",
+      "fontAwesome",
+      "insertHR",
+      "selectAll",
+      "clearFormatting",
+      "|",
+      "print",
+      "getPDF",
+      "html",
+    ],
+    // Change buttons for XS screen.
+    toolbarButtonsXS: [
+      ["undo", "redo"],
+      ["bold", "italic", "underline"],
+    ],
+    placeholderText: "",
+    attribution: false,
+    key: "enter-your-license-key-here",
+    disableRightClick: true,
+
+    imageUploadURL: 'http://localhost:8115/api/froala/image',
+    // imageAllowedTypes: ['jpeg', 'jpg', 'png'],
+
+    fileUploadURL: 'http://localhost:8115/api/froala/document',
+    videoUploadURL: 'http://localhost:8115/api/froala/video',
+
+    // fileUpload: false,
+    // imageUpload: false,
+    imagePaste: false,
+    imagePasteProcess: false,
+    imageResize: true,
+    crossDomain: true,
+    events: {
+      keyup: function (inputEvent) {
+        item.detail = this.html.get();
+      },
+      click: function (clickEvent) {
+        item.detail = this.html.get();
+      },
+      "commands.after": function (cmd, param1, param2) {
+        item.detail = this.html.get();
+      },
+      "paste.after": function (pasteEvent) {
+        item.detail = this.html.get();
+      },
+    },
+  });
+
+  new FroalaEditor("#detail_en", {
+    height: 300,
+    // inlineMode: false,
+    pastePlain: true,
+    paragraphy: false,
+    quickInsertEnabled: false,
+    toolbarButtons: [
+      "undo",
+      "redo",
+      "fullscreen",
+      "|",
+      "fontSize",
+      "color",
+      "bold",
+      "italic",
+      "underline",
+      "inlineClass",
+      "|",
+      "paragraphFormat",
+      "align",
+      "outdent",
+      "indent",
+      "|",
+      "formatOL",
+      "formatUL",
+      "quote",
+      "-",
+      "insertLink",
+      "insertImage",
+      "insertVideo",
+      "insertFile",
+      "insertTable",
+      "|",
+      "fontAwesome",
+      "insertHR",
+      "selectAll",
+      "clearFormatting",
+      "|",
+      "print",
+      "getPDF",
+      "html",
+    ],
+    // Change buttons for XS screen.
+    toolbarButtonsXS: [
+      ["undo", "redo"],
+      ["bold", "italic", "underline"],
+    ],
+    placeholderText: "",
+    attribution: false,
+    key: "enter-your-license-key-here",
+    disableRightClick: true,
+
+    imageUploadURL: 'http://localhost:8115/api/froala/image',
+    // imageAllowedTypes: ['jpeg', 'jpg', 'png'],
+
+    fileUploadURL: 'http://localhost:8115/api/froala/document',
+    videoUploadURL: 'http://localhost:8115/api/froala/video',
+
+    // fileUpload: false,
+    // imageUpload: false,
+    imagePaste: false,
+    imagePasteProcess: false,
+    imageResize: true,
+    crossDomain: true,
+    events: {
+      keyup: function (inputEvent) {
+        item.detail_en = this.html.get();
+      },
+      click: function (clickEvent) {
+        item.detail_en = this.html.get();
+      },
+      "commands.after": function (cmd, param1, param2) {
+        item.detail_en = this.html.get();
+      },
+      "paste.after": function (pasteEvent) {
+        item.detail_en = this.html.get();
+      },
+    },
+  });
+};
+
+onMounted(() => {
+  window.scrollTo(0,0);
+});
+</script>
 <template>
   <main class="layout-page-content mb-6 mt-6">
     <section>
@@ -129,6 +306,8 @@ const format = (date) => {
       <VRow>
         <VCol>
           <h2>ADD News</h2>
+          <h4>{{ item.detail }}</h4>
+          <!-- Froala -->
           <hr />
         </VCol>
       </VRow>
@@ -149,7 +328,7 @@ const format = (date) => {
                   <VCol cols="12">
                     <VRow no-gutters>
                       <VCol cols="12" md="3">
-                        <label for="news_type_id">ประเภทข่าว</label>
+                        <label for="news_type_id">ประเภทข่าว*</label>
                       </VCol>
 
                       <VCol cols="12" md="9">
@@ -166,7 +345,7 @@ const format = (date) => {
                   <VCol cols="12">
                     <VRow no-gutters>
                       <VCol cols="12" md="3">
-                        <label for="title">หัวข้อข่าว</label>
+                        <label for="title">หัวข้อข่าว*</label>
                       </VCol>
 
                       <VCol cols="12" md="9">
@@ -184,7 +363,7 @@ const format = (date) => {
                   <VCol cols="12">
                     <VRow no-gutters>
                       <VCol cols="12" md="3">
-                        <label for="news_file">รูปปกข่าว</label>
+                        <label for="news_file">รูปปกข่าว*</label>
                       </VCol>
 
                       <VCol cols="12" md="9">
@@ -206,12 +385,7 @@ const format = (date) => {
                       </VCol>
 
                       <VCol cols="12" md="9">
-                        <VTextField
-                          id="detail"
-                          v-model="item.detail"
-                          placeholder="Detail"
-                          persistent-placeholder
-                        />
+                        <div id="detail"></div>
                       </VCol>
                     </VRow>
                   </VCol>
@@ -220,13 +394,14 @@ const format = (date) => {
                     <VRow no-gutters>
                       <!-- 👉 Mobile -->
                       <VCol cols="12" md="3">
-                        <label for="is_publish">สถานะ</label>
+                        <label for="is_publish">สถานะ*</label>
                       </VCol>
 
                       <VCol cols="12" md="9">
                         <VSelect
                           id="is_publish"
                           v-model="item.is_publish"
+                          :rules="[requiredValidator]"
                           label="Pubish"
                           :items="[
                             { title: 'Publish', value: 1 },
@@ -241,7 +416,7 @@ const format = (date) => {
                     <VRow no-gutters>
                       <!-- 👉 Mobile -->
                       <VCol cols="12" md="3">
-                        <label for="is_publish">วันที่ลงข่าว</label>
+                        <label for="is_publish">วันที่ลงข่าว*</label>
                       </VCol>
 
                       <VCol cols="12" md="9">
@@ -251,6 +426,7 @@ const format = (date) => {
                           locale="th"
                           auto-apply
                           :format="format"
+                          :rules="[requiredValidator]"
                         >
                           <template #year-overlay-value="{ text }">
                             {{ parseInt(text) + 543 }}
@@ -274,14 +450,31 @@ const format = (date) => {
                   <VCol cols="12">
                     <VRow no-gutters>
                       <VCol cols="12" md="3">
-                        <label for="link_url_en">ไฟล์ Banner (1280*768)</label>
+                        <label for="title">หัวข้อข่าว</label>
+                      </VCol>
+
+                      <VCol cols="12" md="9">
+                        <VTextField
+                          id="title"
+                          v-model="item.title_en"
+                          placeholder="Title EN"
+                          persistent-placeholder
+                        />
+                      </VCol>
+                    </VRow>
+                  </VCol>
+
+                  <VCol cols="12">
+                    <VRow no-gutters>
+                      <VCol cols="12" md="3">
+                        <label for="news_file">รูปปกข่าว</label>
                       </VCol>
 
                       <VCol cols="12" md="9">
                         <VFileInput
-                          label="Upload Banner"
-                          id="banner_en_file"
-                          v-model="item.banner_en_file"
+                          label="Upload Picture"
+                          id="news_en_file"
+                          v-model="item.news_en_file"
                           persistent-placeholder
                         />
                       </VCol>
@@ -291,33 +484,11 @@ const format = (date) => {
                   <VCol cols="12">
                     <VRow no-gutters>
                       <VCol cols="12" md="3">
-                        <label for="title_en">ชื่อ Banner</label>
+                        <label for="detail_en">เนื้อหาข่าว</label>
                       </VCol>
 
                       <VCol cols="12" md="9">
-                        <VTextField
-                          id="title_en"
-                          v-model="item.title_en"
-                          placeholder="Title"
-                          persistent-placeholder
-                        />
-                      </VCol>
-                    </VRow>
-                  </VCol>
-
-                  <VCol cols="12">
-                    <VRow no-gutters>
-                      <VCol cols="12" md="3">
-                        <label for="link_url_en">ลิงค์</label>
-                      </VCol>
-
-                      <VCol cols="12" md="9">
-                        <VTextField
-                          id="link_url_en"
-                          v-model="item.link_url_en"
-                          placeholder="Link"
-                          persistent-placeholder
-                        />
+                        <div id="detail_en"></div>
                       </VCol>
                     </VRow>
                   </VCol>

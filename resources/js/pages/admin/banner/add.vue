@@ -55,6 +55,10 @@ const onSubmit = () => {
     isOverlay.value = false;
   });
 };
+
+onMounted(() => {
+  window.scrollTo(0,0);
+});
 </script>
 
 <template>

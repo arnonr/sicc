@@ -55,6 +55,9 @@ const selectOptions = ref({
   ],
 });
 
+onMounted(() => {
+  window.scrollTo(0,0);
+});
 // 👉 Fetching News
 const fetchItems = () => {
   isOverLay.value = true;
@@ -65,7 +68,6 @@ const fetchItems = () => {
         ? dayjs(advancedSearch.created_at).format("YYYY-MM-DD")
         : undefined,
   };
-  
 
   newsStore
     .fetchNewses({

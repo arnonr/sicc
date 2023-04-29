@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\NewsTypeController;
+use App\Http\Controllers\FroalaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -66,4 +67,10 @@ Route::group(['prefix' => 'news-type'], function () {
   Route::post('/', [NewsTypeController::class, 'add']);
   Route::put('/{id}', [NewsTypeController::class, 'edit']);
   Route::delete('/{id}', [NewsTypeController::class, 'delete']);
+});
+
+Route::group(['prefix' => 'froala'], function () {
+  Route::post('/image', [FroalaController::class, 'image']);
+  Route::post('/document', [FroalaController::class, 'document']);
+  Route::post('/video', [FroalaController::class, 'video']);
 });

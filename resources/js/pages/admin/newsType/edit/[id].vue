@@ -47,7 +47,7 @@ const onSubmit = () => {
             localStorage.setItem("updated", 1);
             nextTick(() => {
               router.push({
-                path: "/admin/news-type",
+                path: "/admin/newsType",
               });
             });
           } else {
@@ -63,6 +63,10 @@ const onSubmit = () => {
     isOverlay.value = false;
   });
 };
+
+onMounted(() => {
+  window.scrollTo(0,0);
+});
 </script>
 
 <template>

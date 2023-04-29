@@ -120,7 +120,7 @@ const headerValues = computed(() => {
               >
             </li>
             <li class="admin-nav-li">
-              <a @click="$router.push({ name: 'admin-news-type' })" class="admin-nav-link cursor-pointer">
+              <a @click="$router.push({ name: 'admin-newsType' })" class="admin-nav-link cursor-pointer">
                 <VIcon icon="tabler-category" size="24" />
                 <span class="admin-nav-item-title"> News Type</span></a
               >

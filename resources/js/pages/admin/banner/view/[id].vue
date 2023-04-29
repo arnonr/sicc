@@ -75,6 +75,10 @@ const onDelete = (id) => {
       isOverLay.value = false;
     });
 };
+
+onMounted(() => {
+  window.scrollTo(0,0);
+});
 </script>
 
 <template>

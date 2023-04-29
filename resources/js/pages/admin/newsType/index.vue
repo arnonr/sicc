@@ -8,9 +8,11 @@ const currentPage = ref(1);
 const totalPage = ref(1);
 const totalItems = ref(0);
 const items = ref([]);
-const isOverLay = ref(true);
+const isOverlay = ref(true);
 const orderBy = ref("created_at");
 const order = ref("asc");
+const IdItemRemove = ref(null);
+const isDialogVisible = ref(false);
 
 const advancedSearch = reactive({
   title: "",
@@ -37,7 +39,7 @@ const selectOptions = ref({
 
 // 👉 Fetching News Type
 const fetchItems = () => {
-  isOverLay.value = true;
+  isOverlay.value = true;
   let search = { ...advancedSearch };
 
   newsTypeStore
@@ -53,14 +55,14 @@ const fetchItems = () => {
         items.value = response.data.data;
         totalPage.value = response.data.totalPage;
         totalItems.value = response.data.totalData;
-        isOverLay.value = false;
+        isOverlay.value = false;
       } else {
         console.log("error");
       }
     })
     .catch((error) => {
       console.error(error);
-      isOverLay.value = false;
+      isOverlay.value = false;
     });
 };
 
@@ -94,7 +96,7 @@ const snackbarColor = ref("success");
 //     })
 //     .catch((error) => {
 //       console.error(error);
-//       isOverLay.value = false;
+//       isOverlay.value = false;
 //     });
 // };
 if (localStorage.getItem("added") == 1) {
@@ -111,12 +113,43 @@ if (localStorage.getItem("updated") == 1) {
   localStorage.removeItem("updated");
 }
 
-if (localStorage.getItem("deleted") == 1) {
-  snackbarText.value = "Deleted News Type";
-  snackbarColor.value = "success";
-  isSnackbarVisible.value = true;
-  localStorage.removeItem("deleted");
-}
+// if (localStorage.getItem("deleted") == 1) {
+//   snackbarText.value = "Deleted News Type";
+//   snackbarColor.value = "success";
+//   isSnackbarVisible.value = true;
+//   localStorage.removeItem("deleted");
+// }
+
+const onConfirmDelete = (id) => {
+  IdItemRemove.value = id;
+  isDialogVisible.value = true;
+};
+
+const onDelete = (id) => {
+  newsTypeStore
+    .deleteNewsType({
+      id: id,
+    })
+    .then((response) => {
+      if (response.data.message == "success") {
+        fetchItems();
+        isDialogVisible.value = false;
+        snackbarText.value = "Deleted News Type";
+        snackbarColor.value = "success";
+        isSnackbarVisible.value = true;
+      } else {
+        console.log("error");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      isOverlay.value = false;
+    });
+};
+
+onMounted(() => {
+  window.scrollTo(0, 0);
+});
 </script>
 
 <template>
@@ -204,7 +237,7 @@ if (localStorage.getItem("deleted") == 1) {
                   variant="outlined"
                   class="float-right"
                   :to="{
-                    name: 'admin-news-type-add',
+                    name: 'admin-newsType-add',
                   }"
                 >
                   Add
@@ -245,7 +278,7 @@ if (localStorage.getItem("deleted") == 1) {
                     </VChip>
                     <VChip color="default" v-else> Unpublish </VChip>
                   </td>
-                  
+
                   <!-- 👉 Actions -->
                   <td class="text-center" style="min-width: 50px">
                     <VBtn
@@ -254,11 +287,21 @@ if (localStorage.getItem("deleted") == 1) {
                       color="success"
                       class="ml-1"
                       :to="{
-                        name: 'admin-news-type-edit-id',
+                        name: 'admin-newsType-edit-id',
                         params: { id: it.id },
                       }"
                     >
                       <VIcon size="22" icon="tabler-edit" />
+                    </VBtn>
+                    <!--  -->
+                    <VBtn
+                      icon
+                      size="x-small"
+                      color="error"
+                      class="ml-1"
+                      @click="onConfirmDelete(it.id)"
+                    >
+                      <VIcon size="22" icon="tabler-trash" />
                     </VBtn>
                   </td>
                 </tr>
@@ -314,6 +357,30 @@ if (localStorage.getItem("deleted") == 1) {
         <VProgressCircular indeterminate />
       </VOverlay>
     </section>
+
+    <!-- Delete Dialog -->
+    <VDialog v-model="isDialogVisible" persistent class="v-dialog-sm">
+      <!-- Dialog close btn -->
+      <DialogCloseBtn @click="isDialogVisible = !isDialogVisible" />
+
+      <!-- Dialog Content -->
+      <VCard title="Are You Sure?">
+        <VCardText>
+          But you will still be able to retrieve this file.
+        </VCardText>
+
+        <VCardText class="d-flex justify-end gap-3 flex-wrap">
+          <VBtn
+            color="secondary"
+            variant="tonal"
+            @click="isDialogVisible = false"
+          >
+            Cancel
+          </VBtn>
+          <VBtn @click="onDelete(IdItemRemove)" color="error"> Delete </VBtn>
+        </VCardText>
+      </VCard>
+    </VDialog>
   </main>
 </template>
 

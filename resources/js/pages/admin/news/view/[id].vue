@@ -1,8 +1,13 @@
 <script setup>
+import dayjs from "dayjs";
+import "dayjs/locale/th";
+import buddhistEra from "dayjs/plugin/buddhistEra";
 import router from "../../../../router";
-import { useBannerStore } from "../useBannerStore";
+import { useNewsStore } from "../useNewsStore";
 
-const bannerStore = useBannerStore();
+dayjs.extend(buddhistEra);
+
+const newsStore = useNewsStore();
 const route = useRoute();
 
 const item = ref({
@@ -35,8 +40,8 @@ if (localStorage.getItem("updated") == 1) {
   localStorage.removeItem("updated");
 }
 
-bannerStore
-  .fetchBanner({
+newsStore
+  .fetchNews({
     id: route.params.id,
   })
   .then((response) => {
@@ -56,15 +61,15 @@ const onConfirmDelete = () => {
 };
 
 const onDelete = (id) => {
-  bannerStore
-    .deleteBanner({
+  newsStore
+    .deleteNews({
       id: id,
     })
     .then((response) => {
       if (response.data.message == "success") {
         localStorage.setItem("deleted", 1);
         router.push({
-          path: "/admin/banner",
+          path: "/admin/news",
         });
       } else {
         console.log("error");
@@ -75,7 +80,16 @@ const onDelete = (id) => {
       isOverLay.value = false;
     });
 };
+
+onMounted(() => {
+  window.scrollTo(0, 0);
+});
 </script>
+<style lang="scss">
+.mw-120 {
+  min-width: 120px;
+}
+</style>
 
 <template>
   <main class="layout-page-content mb-6 mt-6">
@@ -83,7 +97,7 @@ const onDelete = (id) => {
       <!-- Search -->
       <VRow>
         <VCol>
-          <h2>View Banner</h2>
+          <h2>View News</h2>
           <hr />
         </VCol>
       </VRow>
@@ -91,103 +105,154 @@ const onDelete = (id) => {
         <VCol>
           <VCard title="" class="pb-5 pt-5">
             <VCardText>
-              <!-- <div class="mb-3 bg-primary" >
-                <h3>ข้อมูลแบนเนอร์</h3>
-              </div> -->
-
               <div class="ma-4">
                 <h1>THA</h1>
               </div>
-              <div class="ma-4">
-                <span class="font-weight-bold">ชื่อแบนเนอร์ : </span>
-                <span class="font-italic">{{ item.title }}</span>
-              </div>
-              <div class="ma-4">
-                <hr />
-              </div>
-              <div class="ma-4">
-                <span class="font-weight-bold">รูปภาพ : </span>
-                <!-- <span class="font-italic"> -->
-                <a :href="item.banner_file" target="_blank">
-                  <VImg
-                    :src="item.banner_file"
-                    style="width: 100%"
-                    class="mt-2"
-                  />
-                </a>
-                <!-- </span> -->
-              </div>
-              <div class="ma-4">
-                <hr />
-              </div>
-              <div class="ma-4">
-                <span class="font-weight-bold">ลิงค์ : </span>
-                <a :href="item.link_url" target="_blank">
-                  <span class="font-italic">{{ item.link_url }}</span></a
-                >
-              </div>
-              <div class="ma-4">
-                <hr />
-              </div>
+
+              <VRow class="ma-4 mb-1 mt-1">
+                <VCol cols="12" md="2">
+                  <span class="font-weight-bold mw-120">หัวข้อข่าว : </span>
+                </VCol>
+                <VCol>
+                  <span class="font-italic">{{ item.title }}</span>
+                </VCol>
+                <VCol cols="12">
+                  <hr />
+                </VCol>
+              </VRow>
+
+              <VRow class="ma-4 mb-1 mt-1">
+                <VCol cols="12" md="2">
+                  <span class="font-weight-bold mw-120">ประเภทข่าว :</span>
+                </VCol>
+                <VCol>
+                  <span class="font-italic">{{ item.news_type_title }}</span>
+                </VCol>
+                <VCol cols="12">
+                  <hr />
+                </VCol>
+              </VRow>
+
+              <VRow class="ma-4 mb-1 mt-1">
+                <VCol cols="12" md="2">
+                  <span class="font-weight-bold mw-120 d-inline"
+                    >รูปภาพปก :
+                  </span>
+                </VCol>
+                <VCol>
+                  <div class="justify-center d-inline">
+                    <a :href="item.news_file" target="_blank">
+                      <VImg
+                        :src="item.news_file"
+                        :width="500"
+                        aspect-ratio="16/9"
+                        class="mt-2"
+                      />
+                    </a>
+                  </div>
+                </VCol>
+
+                <VCol cols="12">
+                  <hr />
+                </VCol>
+              </VRow>
+
+              <VRow class="ma-4 mb-1 mt-1">
+                <VCol cols="12" md="2">
+                  <span class="font-weight-bold mw-120 d-inline"
+                    >เนื้อหาข่าว :
+                  </span>
+                </VCol>
+                <VCol>
+                  <div v-html="item.detail" class="d-inline"></div>
+                </VCol>
+                <VCol cols="12">
+                  <hr />
+                </VCol>
+              </VRow>
+
+              <VRow class="ma-4 mb-1 mt-1">
+                <VCol cols="12" md="2">
+                  <span class="font-weight-bold mw-120">สถานะ : </span>
+                </VCol>
+                <VCol>
+                  <span class="font-italic">
+                    <VChip color="success" v-if="item.is_publish == 1">
+                      Publish
+                    </VChip>
+                    <VChip color="default" v-else> Unpublish </VChip>
+                  </span>
+                </VCol>
+                <VCol cols="12">
+                  <hr />
+                </VCol>
+              </VRow>
+
+              <VRow class="ma-4 mb-1 mt-1">
+                <VCol cols="12" md="2">
+                  <span class="font-weight-bold mw-120">วันที่ลงข่าว : </span>
+                </VCol>
+                <VCol>
+                  {{ dayjs(item.created_at).locale("th").format("DD MMM BB") }}
+                </VCol>
+                <VCol cols="12">
+                  <hr />
+                </VCol>
+              </VRow>
 
               <div class="ma-4">
-                <span class="font-weight-bold">ลำดับ : </span>
-
-                <span class="font-italic">{{ item.level }}</span>
-              </div>
-              <div class="ma-4">
-                <hr />
-              </div>
-
-              <div class="ma-4">
-                <span class="font-weight-bold">สถานะ : </span>
-
-                <span class="font-italic">
-                  <VChip color="success" v-if="item.is_publish == 1">
-                    Publish
-                  </VChip>
-                  <VChip color="default" v-else> Unpublish </VChip>
-                </span>
-              </div>
-              <div class="ma-4">
-                <hr />
-              </div>
-
-              <div class="ma-4 mt-10">
                 <h1>ENG</h1>
               </div>
 
-              <div class="ma-4">
-                <span class="font-weight-bold">ชื่อแบนเนอร์ : </span>
-                <span class="font-italic">{{ item.title_en }}</span>
-              </div>
-              <div class="ma-4">
-                <hr />
-              </div>
-              <div class="ma-4">
-                <span class="font-weight-bold">รูปภาพ : </span>
-                <!-- <span class="font-italic"> -->
-                  <a :href="item.banner_en_file" target="_blank">
-                  <VImg
-                    :src="item.banner_en_file"
-                    style="width: 100%"
-                    class="mt-2"
-                  />
-                </a>
-                <!-- </span> -->
-              </div>
-              <div class="ma-4">
-                <hr />
-              </div>
-              <div class="ma-4">
-                <span class="font-weight-bold">ลิงค์ : </span>
-                <a :href="item.link_url_en" target="_blank">
-                  <span class="font-italic">{{ item.link_url_en }}</span></a
-                >
-              </div>
-              <div class="ma-4">
-                <hr />
-              </div>
+              <VRow class="ma-4 mb-1 mt-1">
+                <VCol cols="12" md="2">
+                  <span class="font-weight-bold mw-120">หัวข้อข่าว : </span>
+                </VCol>
+                <VCol>
+                  <span class="font-italic">{{ item.title_en }}</span>
+                </VCol>
+                <VCol cols="12">
+                  <hr />
+                </VCol>
+              </VRow>
+
+              <VRow class="ma-4 mb-1 mt-1">
+                <VCol cols="12" md="2">
+                  <span class="font-weight-bold mw-120 d-inline"
+                    >รูปภาพปก :
+                  </span>
+                </VCol>
+                <VCol>
+                  <div class="justify-center d-inline">
+                    <a :href="item.news_en_file" target="_blank">
+                      <VImg
+                        :src="item.news_en_file"
+                        :width="500"
+                        aspect-ratio="16/9"
+                        class="mt-2"
+                      />
+                    </a>
+                  </div>
+                </VCol>
+
+                <VCol cols="12">
+                  <hr />
+                </VCol>
+              </VRow>
+
+              <VRow class="ma-4 mb-1 mt-1">
+                <VCol cols="12" md="2">
+                  <span class="font-weight-bold mw-120 d-inline"
+                    >เนื้อหาข่าว :
+                  </span>
+                </VCol>
+                <VCol>
+                  <div v-html="item.detail_en"></div>
+                </VCol>
+                <VCol cols="12">
+                  <hr />
+                </VCol>
+              </VRow>
 
               <div class="ma-4 mt-10 div-action">
                 <VBtn

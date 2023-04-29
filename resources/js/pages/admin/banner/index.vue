@@ -108,6 +108,10 @@ if (localStorage.getItem("deleted") == 1) {
   isSnackbarVisible.value = true;
   localStorage.removeItem("deleted");
 }
+
+onMounted(() => {
+  window.scrollTo(0,0);
+});
 </script>
 
 <template>

@@ -27,7 +27,7 @@ class NewsController extends Controller
             'news.title_en as title_en',
             DB::raw("(CASE WHEN news_file = NULL THEN 'http://localhost:8115/storage/news/scg.png'
             ELSE CONCAT('".$this->uploadUrl."',news_file) END) AS news_file"),
-            DB::raw("(CASE WHEN news_en_file = NULL THEN 'http://localhost:8115/storage/mews/en/scg.png'
+            DB::raw("(CASE WHEN news_en_file = NULL THEN 'http://localhost:8115/storage/news/en/scg.png'
             ELSE CONCAT('".$this->uploadUrl."',news_en_file) END) AS news_en_file"),
             'news.news_type_id',
             'news.detail',
@@ -69,9 +69,9 @@ class NewsController extends Controller
         }
 
         if($request->orderBy){
-            $items = $items->orderBy($request->orderBy,$request->order);
+            $items = $items->orderBy($request->orderBy,$request->order)->orderBy('id', 'DESC');
         }else{
-            $items = $items->orderBy('news.created_at', 'desc');
+            $items = $items->orderBy('news.created_at', 'desc')->orderBy('id', 'DESC');
         }
 
         $count = $items->count();
@@ -103,7 +103,7 @@ class NewsController extends Controller
             'news.title_en as title_en',
             DB::raw("(CASE WHEN news_file = NULL THEN 'http://localhost:8115/storage/news/scg.png'
             ELSE CONCAT('".$this->uploadUrl."',news_file) END) AS news_file"),
-            DB::raw("(CASE WHEN news_en_file = NULL THEN 'http://localhost:8115/storage/mews/en/scg.png'
+            DB::raw("(CASE WHEN news_en_file = NULL THEN 'http://localhost:8115/storage/news/en/scg.png'
             ELSE CONCAT('".$this->uploadUrl."',news_en_file) END) AS news_en_file"),
             'news.news_type_id',
             'news.detail',
@@ -135,7 +135,7 @@ class NewsController extends Controller
         ]);
         
         $pathNews = null;
-        if(($request->news_file != "") && ($request->news_file != 'null')){
+        if(($request->news_file != "") && ($request->news_file != 'null') && ($request->news_file != 'undefined')){
             $fileNameNews = 'news-'.rand(10,100).'-'.$request->file('news_file')->getClientOriginalName();
             $pathNews = '/news/'.$fileNameNews;
             Storage::disk('public')->put($pathNews, file_get_contents($request->news_file));
@@ -146,7 +146,7 @@ class NewsController extends Controller
         }
 
         $pathNewsEN = null;
-        if(($request->news_en_file != "") && ($request->news_en_file != 'null')){
+        if(($request->news_en_file != "") && ($request->news_en_file != 'null')  && ($request->news_en_file != 'undefined')){
             $fileNameNewsEN = 'news-en-'.rand(10,100).'-'.$request->news_en_file->getClientOriginalName();
             $pathNewsEN = '/news/en/'.$fileNameNewsEN;
             Storage::disk('public')->put($pathNewsEN, file_get_contents($request->news_en_file));
