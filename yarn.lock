@@ -2517,6 +2517,11 @@
     "combined-stream" "^1.0.8"
     "mime-types" "^2.1.12"
 
+"froala-editor@^4.0.18":
+  "integrity" "sha512-FLTe9OrgFgEe1x+lOwl2tmJxPPyW6HgMLh5A0C/x6TQlziixjp6P8kMLjyG3wv4ve8hgWm+iCxfAbnd1KxvDZA=="
+  "resolved" "https://registry.npmjs.org/froala-editor/-/froala-editor-4.0.18.tgz"
+  "version" "4.0.18"
+
 "fs-minipass@^2.0.0":
   "integrity" "sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg=="
   "resolved" "https://registry.npmjs.org/fs-minipass/-/fs-minipass-2.1.0.tgz"
