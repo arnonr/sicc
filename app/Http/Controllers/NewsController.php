@@ -68,6 +68,7 @@ class NewsController extends Controller
         if ($request->lang) {
             if($request->lang == 'en')
             $items->whereNotNull('news.title_en');
+            $items->where('news.title_en','not like','%null%');
         }
 
         if ($request->year) {

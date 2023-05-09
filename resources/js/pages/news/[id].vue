@@ -124,7 +124,7 @@ onMounted(() => {
           <div class="mb-6" align="center">
             <VImg
               align="center"
-              :src="lang == 'th' ? item.news_file : item.news_file_en"
+              :src="lang == 'th' ? item.news_file : item.news_en_file"
               width="800"
             />
           </div>

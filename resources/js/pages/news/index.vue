@@ -103,6 +103,22 @@ const fetchItems = () => {
     .then((response) => {
       if (response.data.message == "success") {
         items.value = response.data.data;
+
+        if (lang.value != "th") {
+          items.value = items.value.filter((x) => {
+            let isEng = true;
+            if (
+              x.title_en == null ||
+              x.title_en == "" ||
+              x.title_en == "null"
+            ) {
+              isEng = false;
+            }
+
+            return isEng;
+          });
+        }
+
         totalPage.value = response.data.totalPage;
         totalItems.value = response.data.totalData;
         isOverlay.value = false;
@@ -239,10 +255,7 @@ const format = (date) => {
                     style="cursor: pointer"
                   >
                     <div class="pt-2" style="min-height: 60px">
-                      <span
-                        class="font-weight-bold"
-                        style="font-size: 1.2rem;"
-                      >
+                      <span class="font-weight-bold" style="font-size: 1.2rem">
                         {{ lang == "th" ? it.title : it.title_en }}
                       </span>
                     </div>
