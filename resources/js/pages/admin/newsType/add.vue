@@ -1,13 +1,14 @@
 <script setup>
 import { requiredValidator } from "@validators";
 
-import router from "../../../router";
+import { useRouter } from 'vue-router';
 import { useNewsTypeStore } from "./useNewsTypeStore";
 // const route = useRoute();
+const router = useRouter()
 
 const newsTypeStore = useNewsTypeStore();
 
-const item = reactive({
+const item = ref({
   id: null,
   title: "",
   title_en: "",
@@ -23,7 +24,7 @@ const onSubmit = () => {
     if (valid) {
       newsTypeStore
         .addNewsType({
-          ...item,
+          ...item.value,
         })
         .then((response) => {
           if (response.data.message == "success") {

@@ -16,7 +16,7 @@ const currentPage = ref(1);
 const totalPage = ref(1);
 const totalItems = ref(0);
 const items = ref([]);
-const isOverLay = ref(true);
+const isOverlay = ref(true);
 const orderBy = ref("created_at");
 const order = ref("desc");
 // const dayjs = require('dayjs');
@@ -60,7 +60,7 @@ onMounted(() => {
 });
 // 👉 Fetching News
 const fetchItems = () => {
-  isOverLay.value = true;
+  isOverlay.value = true;
   let search = {
     ...advancedSearch,
     created_at:
@@ -82,14 +82,14 @@ const fetchItems = () => {
         items.value = response.data.data;
         totalPage.value = response.data.totalPage;
         totalItems.value = response.data.totalData;
-        isOverLay.value = false;
+        isOverlay.value = false;
       } else {
         console.log("error");
       }
     })
     .catch((error) => {
       console.error(error);
-      isOverLay.value = false;
+      isOverlay.value = false;
     });
 };
 
@@ -107,14 +107,14 @@ const fetchNewsTypes = () => {
           };
         });
         console.log(selectOptions.value.news_type);
-        isOverLay.value = false;
+        isOverlay.value = false;
       } else {
         console.log("error");
       }
     })
     .catch((error) => {
       console.error(error);
-      isOverLay.value = false;
+      isOverlay.value = false;
     });
 };
 fetchNewsTypes();
@@ -306,10 +306,7 @@ const format = (date) => {
                   <td>
                     <VImg :src="it.news_file" width="200" class="ma-1" />
                   </td>
-                  <!-- <td>
-                    <VImg :src="it.banner_file" width="400" class="ma-1" />
                 
-                  </td> -->
 
                   <td class="text-center" style="min-width: 110px">
                     <VChip color="success" v-if="it.is_publish == 1">
@@ -343,24 +340,6 @@ const format = (date) => {
                     >
                       <VIcon size="22" icon="tabler-eye" />
                     </VBtn>
-
-                    <!-- <VBtn
-                      icon
-                      size="x-small"
-                      color="success"
-                      class="ml-1"
-                      :to="{
-                        name: 'admin-banner-edit-id',
-                        params: { id: it.id },
-                      }"
-                    >
-                      <VIcon size="22" icon="tabler-edit" />
-                    </VBtn> -->
-
-                    <!-- :to="{
-                              name: 'apps-user-view-id',
-                              params: { id: it.id },
-                            }" -->
                   </td>
                 </tr>
               </tbody>

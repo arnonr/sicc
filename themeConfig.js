@@ -5,7 +5,7 @@ import { VIcon } from 'vuetify/components'
 import { defineThemeConfig } from '@core'
 import { RouteTransitions, Skins } from '@core/enums'
 // import logo from '@images/logo.svg?raw'
-import logoSICC from '@images/logos/logo-sicc.jpeg'
+import logoSICC from '@images/logos/logo-sicc.png'
 import { AppContentLayoutNav, ContentWidth, FooterType, NavbarType } from '@layouts/enums'
 
 export const { themeConfig, layoutConfig } = defineThemeConfig({

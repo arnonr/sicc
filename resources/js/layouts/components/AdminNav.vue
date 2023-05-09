@@ -100,41 +100,87 @@ const headerValues = computed(() => {
           <!-- 👉 Skin -->
           <ul class="admin-nav-items">
             <li class="admin-nav-li">
-              <a @click="$router.push({ name: 'admin-banner' })" class="admin-nav-link cursor-pointer">
+              <a
+                @click="$router.push({ name: 'admin-banner' })"
+                class="admin-nav-link cursor-pointer"
+              >
                 <VIcon icon="tabler-slideshow" size="24" />
                 <span class="admin-nav-item-title"> Banner</span></a
               >
               <hr class="admin-nav-hr" />
             </li>
             <li class="admin-nav-li">
-              <a @click="$router.push({ name: 'admin-banner' })" class="admin-nav-link cursor-pointer">
+              <a
+                @click="$router.push({ name: 'admin-banner' })"
+                class="admin-nav-link cursor-pointer"
+              >
                 <VIcon icon="tabler-augmented-reality" size="24" />
                 <span class="admin-nav-item-title"> Service</span></a
               >
               <hr class="admin-nav-hr" />
             </li>
             <li class="admin-nav-li">
-              <a @click="$router.push({ name: 'admin-news' })" class="admin-nav-link cursor-pointer">
+              <a
+                @click="$router.push({ name: 'admin-news' })"
+                class="admin-nav-link cursor-pointer"
+              >
                 <VIcon icon="tabler-news" size="24" />
                 <span class="admin-nav-item-title"> News</span></a
               >
             </li>
             <li class="admin-nav-li">
-              <a @click="$router.push({ name: 'admin-newsType' })" class="admin-nav-link cursor-pointer">
+              <a
+                @click="$router.push({ name: 'admin-newsType' })"
+                class="admin-nav-link cursor-pointer"
+              >
                 <VIcon icon="tabler-category" size="24" />
                 <span class="admin-nav-item-title"> News Type</span></a
               >
               <hr class="admin-nav-hr" />
             </li>
             <li class="admin-nav-li">
-              <a @click="$router.push({ name: 'admin-banner' })" class="admin-nav-link cursor-pointer">
+              <a
+                @click="$router.push({ name: 'admin-aboutUs' })"
+                class="admin-nav-link cursor-pointer"
+              >
                 <VIcon icon="tabler-book-2" size="24" />
                 <span class="admin-nav-item-title"> About Us</span></a
               >
               <hr class="admin-nav-hr" />
             </li>
+            <li class="admin-nav-li"></li>
+
             <li class="admin-nav-li">
-              <a @click="$router.push({ name: 'admin-banner' })" class="admin-nav-link cursor-pointer">
+              <a
+                @click="$router.push({ name: 'admin-team' })"
+                class="admin-nav-link cursor-pointer"
+              >
+                <VIcon icon="tabler-users" size="24" />
+                <span class="admin-nav-item-title"> Administrator</span></a
+              >
+            </li>
+            <li class="admin-nav-li">
+              <a
+                @click="$router.push({ name: 'admin-department' })"
+                class="admin-nav-link cursor-pointer"
+              >
+                <VIcon icon="tabler-category" size="24" />
+                <span class="admin-nav-item-title"> Department</span></a
+              >
+              <hr class="admin-nav-hr" />
+            </li>
+            <li class="admin-nav-li">
+              <!-- router.push({ name: 'user', params: { username: 'eduardo' } }) -->
+              <!-- <a @click="$router.push({ path: '/admin/contactUs/view/1'})" class="admin-nav-link cursor-pointer"> -->
+              <a
+                @click="
+                  $router.push({
+                    name: 'admin-contactUs-view-id',
+                    params: { id: 1 },
+                  })
+                "
+                class="admin-nav-link cursor-pointer"
+              >
                 <VIcon icon="tabler-address-book" size="24" />
                 <span class="admin-nav-item-title"> Contact Us</span></a
               >

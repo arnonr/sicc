@@ -7,5 +7,12 @@ export const useHomeStore = defineStore("HomeStore", {
     fetchBanners(params) {
       return axios.get("/banner", { params });
     },
+    fetchNews(params) {
+      return axios.get("/news", { params });
+    },
+    fetchNewsTypes(params) {
+      return axios.get("/news-type", { params });
+    },
+    
   },
 });

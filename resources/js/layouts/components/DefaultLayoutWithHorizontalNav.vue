@@ -4,7 +4,7 @@ import { isUserLoggedIn } from "@/router/utils";
 import { useThemeConfig } from "@core/composable/useThemeConfig";
 import { themeConfig } from "@themeConfig";
 
-import logoSCI from "@images/logos/logo-sci.jpeg";
+import logoSCI from "@images/logos/logo-sci.png";
 // Components
 import Footer from "@/layouts/components/Footer.vue";
 import NavBarI18n from "@/layouts/components/NavBarI18n.vue";

@@ -1,22 +1,22 @@
 <script setup>
-import { VForm } from 'vuetify/components'
+import { useAppAbility } from '@/plugins/casl/useAppAbility'
+import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
+import axios from '@axios'
+import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
 import authV2RegisterIllustrationBorderedDark from '@images/pages/auth-v2-register-illustration-bordered-dark.png'
 import authV2RegisterIllustrationBorderedLight from '@images/pages/auth-v2-register-illustration-bordered-light.png'
 import authV2RegisterIllustrationDark from '@images/pages/auth-v2-register-illustration-dark.png'
 import authV2RegisterIllustrationLight from '@images/pages/auth-v2-register-illustration-light.png'
 import authV2MaskDark from '@images/pages/misc-mask-dark.png'
 import authV2MaskLight from '@images/pages/misc-mask-light.png'
-import { useAppAbility } from '@/plugins/casl/useAppAbility'
-import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
-import axios from '@axios'
-import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
 import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
 import {
-  alphaDashValidator,
-  emailValidator,
-  requiredValidator,
+alphaDashValidator,
+emailValidator,
+requiredValidator,
 } from '@validators'
+import { VForm } from 'vuetify/components'
 
 const refVForm = ref()
 const username = ref('johnDoe')

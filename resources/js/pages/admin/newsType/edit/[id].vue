@@ -1,10 +1,11 @@
 <script setup>
 import { requiredValidator } from "@validators";
 
-import router from "../../../../router";
+import { useRoute, useRouter } from 'vue-router';
 import { useNewsTypeStore } from "../useNewsTypeStore";
 // const route = useRoute();
 const route = useRoute();
+const router = useRouter()
 const newsTypeStore = useNewsTypeStore();
 
 const item = ref({
@@ -31,7 +32,7 @@ newsTypeStore
   })
   .catch((error) => {
     console.error(error);
-    isOverLay.value = false;
+    isOverlay.value = false;
   });
 
 const onSubmit = () => {
@@ -57,7 +58,7 @@ const onSubmit = () => {
         })
         .catch((error) => {
           console.error(error);
-          //   isOverLay.value = false;
+          //   isOverlay.value = false;
         });
     }
     isOverlay.value = false;

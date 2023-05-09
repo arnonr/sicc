@@ -9,6 +9,10 @@ use App\Http\Controllers\BannerController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\NewsTypeController;
 use App\Http\Controllers\FroalaController;
+use App\Http\Controllers\AboutUsController;
+use App\Http\Controllers\ContactUsController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\TeamController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,6 +71,41 @@ Route::group(['prefix' => 'news-type'], function () {
   Route::post('/', [NewsTypeController::class, 'add']);
   Route::put('/{id}', [NewsTypeController::class, 'edit']);
   Route::delete('/{id}', [NewsTypeController::class, 'delete']);
+});
+
+Route::group(['prefix' => 'about-us'], function () {
+  Route::put('/level/{id}', [AboutUsController::class, 'editLevel']);
+  Route::get('/{id}', [AboutUsController::class, 'get']);
+  Route::get('/', [AboutUsController::class, 'getAll']);
+  Route::post('/', [AboutUsController::class, 'add']);
+  Route::put('/{id}', [AboutUsController::class, 'edit']);
+  Route::delete('/{id}', [AboutUsController::class, 'delete']);
+});
+
+Route::group(['prefix' => 'contact-us'], function () {
+  Route::get('/{id}', [ContactUsController::class, 'get']);
+  Route::get('/', [ContactUsController::class, 'getAll']);
+  Route::post('/', [ContactUsController::class, 'add']);
+  Route::put('/{id}', [ContactUsController::class, 'edit']);
+  Route::delete('/{id}', [ContactUsController::class, 'delete']);
+});
+
+Route::group(['prefix' => 'department'], function () {
+  Route::put('/level/{id}', [DepartmentController::class, 'editLevel']);
+  Route::get('/{id}', [DepartmentController::class, 'get']);
+  Route::get('/', [DepartmentController::class, 'getAll']);
+  Route::post('/', [DepartmentController::class, 'add']);
+  Route::put('/{id}', [DepartmentController::class, 'edit']);
+  Route::delete('/{id}', [DepartmentController::class, 'delete']);
+});
+
+Route::group(['prefix' => 'team'], function () {
+  Route::put('/level/{id}', [TeamController::class, 'editLevel']);
+  Route::get('/{id}', [TeamController::class, 'get']);
+  Route::get('/', [TeamController::class, 'getAll']);
+  Route::post('/', [TeamController::class, 'add']);
+  Route::put('/{id}', [TeamController::class, 'edit']);
+  Route::delete('/{id}', [TeamController::class, 'delete']);
 });
 
 Route::group(['prefix' => 'froala'], function () {

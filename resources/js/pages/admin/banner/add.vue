@@ -1,13 +1,14 @@
 <script setup>
 import { requiredValidator } from "@validators";
 
-import router from "../../../router";
+
+import { useRouter } from 'vue-router';
 import { useBannerStore } from "./useBannerStore";
 // const route = useRoute();
-
+const router = useRouter()
 const bannerStore = useBannerStore();
 
-const item = reactive({
+const item = ref({
   id: null,
   title: "",
   title_en: "",
@@ -27,10 +28,10 @@ const onSubmit = () => {
     if (valid) {
       bannerStore
         .addBanner({
-          ...item,
-          banner_file: item.banner_file != null ? item.banner_file[0] : null,
+          ...item.value,
+          banner_file: item.value.banner_file != null ? item.value.banner_file[0] : null,
           banner_en_file:
-            item.banner_en_file != null ? item.banner_en_file[0] : null,
+            item.value.banner_en_file != null ? item.value.banner_en_file[0] : null,
         })
         .then((response) => {
           if (response.data.message == "success") {
@@ -49,7 +50,7 @@ const onSubmit = () => {
         })
         .catch((error) => {
           console.error(error);
-          //   isOverLay.value = false;
+          //   isOverlay.value = false;
         });
     }
     isOverlay.value = false;

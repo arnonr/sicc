@@ -16,6 +16,7 @@ class NewsType extends Model
         'id',
         'title',
         'title_en',
+        'level',
         'is_publish',
         'created_at',
         'created_by',

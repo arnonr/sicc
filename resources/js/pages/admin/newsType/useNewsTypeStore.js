@@ -13,31 +13,11 @@ export const useNewsTypeStore = defineStore("NewsTypeStore", {
     },
 
     async addNewsType(dataSend) {
-      var form_data = new FormData();
-
-      for (var key in dataSend) {
-        form_data.append(key, dataSend[key]);
-      }
-      return await axios.post("/news-type", form_data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      return await axios.post("/news-type", dataSend);
     },
 
     async editNewsType(dataSend) {
-      var form_data = new FormData();
-
-      for (var key in dataSend) {
-        form_data.append(key, dataSend[key]);
-      }
-      form_data.append("_method", "PUT");
-
-      return await axios.post(`/news-type/${dataSend.id}`, form_data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      return await axios.put(`/news-type/${dataSend.id}`, dataSend);
     },
 
     deleteNewsType({ id }) {

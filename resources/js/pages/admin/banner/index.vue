@@ -8,7 +8,7 @@ const currentPage = ref(1);
 const totalPage = ref(1);
 const totalItems = ref(0);
 const items = ref([]);
-const isOverLay = ref(true);
+const isOverlay = ref(true);
 const orderBy = ref("level");
 const order = ref("asc");
 
@@ -23,10 +23,6 @@ const resetAdvancedSearch = () => {
 };
 
 const selectOptions = ref({
-  // is_publish: [
-  //   { title: "Publish", code: 1 },
-  //   { title: "Non-Publish", code: 0 },
-  // ],
   perPage: [
     { title: "20", value: 20 },
     { title: "40", value: 40 },
@@ -41,7 +37,7 @@ const selectOptions = ref({
 
 // 👉 Fetching users
 const fetchItems = () => {
-  isOverLay.value = true;
+  isOverlay.value = true;
   let search = { ...advancedSearch };
 
   bannerStore
@@ -57,14 +53,14 @@ const fetchItems = () => {
         items.value = response.data.data;
         totalPage.value = response.data.totalPage;
         totalItems.value = response.data.totalData;
-        isOverLay.value = false;
+        isOverlay.value = false;
       } else {
         console.log("error");
       }
     })
     .catch((error) => {
       console.error(error);
-      isOverLay.value = false;
+      isOverlay.value = false;
     });
 };
 
@@ -98,7 +94,7 @@ const handleLevelClick = (id, type) => {
     })
     .catch((error) => {
       console.error(error);
-      isOverLay.value = false;
+      isOverlay.value = false;
     });
 };
 

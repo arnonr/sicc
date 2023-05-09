@@ -1,9 +1,10 @@
 <script setup>
-import router from "../../../../router";
+import { useRoute, useRouter } from 'vue-router';
 import { useBannerStore } from "../useBannerStore";
 
 const bannerStore = useBannerStore();
 const route = useRoute();
+const router = useRouter()
 
 const item = ref({
   id: null,
@@ -48,7 +49,7 @@ bannerStore
   })
   .catch((error) => {
     console.error(error);
-    isOverLay.value = false;
+    isOverlay.value = false;
   });
 
 const onConfirmDelete = () => {
@@ -72,7 +73,7 @@ const onDelete = (id) => {
     })
     .catch((error) => {
       console.error(error);
-      isOverLay.value = false;
+      isOverlay.value = false;
     });
 };
 

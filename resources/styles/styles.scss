@@ -102,6 +102,22 @@ div.admin-table {
     font-family: Prompt !important;
 }
 
+.nav-group {
+    margin-left: 2em;
+}
+
+.nav-link.sub-item a:hover {
+    color: #ffcb05;
+}
+
+.layout-horizontal-nav .nav-link.sub-item a.router-link-active {
+    background: #fff;
+   color: #000 !important;
+}
+
+.layout-horizontal-nav, .layout-nav-type-vertical .layout-vertical-nav {
+    color: #000;
+}
 // text-decoration: underline;
 
 // .layout-horizontal-nav .nav-link a::before {

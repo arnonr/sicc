@@ -2,13 +2,15 @@
 import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
-import router from "../../../../router";
+import { useRoute, useRouter } from 'vue-router';
 import { useNewsStore } from "../useNewsStore";
 
+const route = useRoute();
+const router = useRouter()
 dayjs.extend(buddhistEra);
 
 const newsStore = useNewsStore();
-const route = useRoute();
+
 
 const item = ref({
   id: null,
@@ -17,8 +19,8 @@ const item = ref({
   link_url: "",
   link_url_en: "",
   is_publish: 1,
-  banner_file: [],
-  banner_file_en: [],
+  news_file: [],
+  news_file_en: [],
 });
 const isOverlay = ref(false);
 const isSnackbarVisible = ref(false);
@@ -27,14 +29,14 @@ const snackbarColor = ref("success");
 const isDialogVisible = ref(false);
 
 if (localStorage.getItem("added") == 1) {
-  snackbarText.value = "Added Banner";
+  snackbarText.value = "Added News";
   snackbarColor.value = "success";
   isSnackbarVisible.value = true;
   localStorage.removeItem("added");
 }
 
 if (localStorage.getItem("updated") == 1) {
-  snackbarText.value = "Updated Banner";
+  snackbarText.value = "Updated News";
   snackbarColor.value = "success";
   isSnackbarVisible.value = true;
   localStorage.removeItem("updated");
@@ -53,7 +55,7 @@ newsStore
   })
   .catch((error) => {
     console.error(error);
-    isOverLay.value = false;
+    isOverlay.value = false;
   });
 
 const onConfirmDelete = () => {
@@ -77,7 +79,7 @@ const onDelete = (id) => {
     })
     .catch((error) => {
       console.error(error);
-      isOverLay.value = false;
+      isOverlay.value = false;
     });
 };
 
@@ -105,9 +107,11 @@ onMounted(() => {
         <VCol>
           <VCard title="" class="pb-5 pt-5">
             <VCardText>
-              <div class="ma-4">
+              <VRow class="ma-4 mb-1 mt-1">
+                <VCol cols="12" md="2">
                 <h1>THA</h1>
-              </div>
+                </VCol>
+              </VRow>
 
               <VRow class="ma-4 mb-1 mt-1">
                 <VCol cols="12" md="2">
@@ -200,9 +204,11 @@ onMounted(() => {
                 </VCol>
               </VRow>
 
-              <div class="ma-4">
+              <VRow class="ma-4 mb-1 mt-1">
+                <VCol cols="12" md="2">
                 <h1>ENG</h1>
-              </div>
+                </VCol>
+              </VRow>
 
               <VRow class="ma-4 mb-1 mt-1">
                 <VCol cols="12" md="2">
@@ -260,7 +266,7 @@ onMounted(() => {
                   variant="outlined"
                   color="success"
                   :to="{
-                    name: 'admin-banner-edit-id',
+                    name: 'admin-news-edit-id',
                     params: { id: route.params.id },
                   }"
                 >

@@ -77,28 +77,6 @@ const isSnackbarVisible = ref(false);
 const snackbarText = ref("");
 const snackbarColor = ref("success");
 
-// const handleLevelClick = (id, type) => {
-//   bannerStore
-//     .editLevelBanner({
-//       id: id,
-//       type: type,
-//     })
-//     .then((response) => {
-//       if (response.data.message == "success") {
-//         fetchItems();
-//         // Success
-//         snackbarText.value = "Ordered";
-//         isSnackbarVisible.value = true;
-//         snackbarColor.value = "success";
-//       } else {
-//         console.log("error");
-//       }
-//     })
-//     .catch((error) => {
-//       console.error(error);
-//       isOverlay.value = false;
-//     });
-// };
 if (localStorage.getItem("added") == 1) {
   snackbarText.value = "Added News Type";
   snackbarColor.value = "success";

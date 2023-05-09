@@ -38,7 +38,8 @@ class NewsController extends Controller
             'news.created_by as created_by',
             'news.updated_at as updated_at',
             'news.updated_by as updated_by',
-            'news_type.title as news_type_title'
+            'news_type.title as news_type_title',
+            'news_type.title_en as news_type_title_en'
         )
         ->join('news_type','news_type.id','=','news.news_type_id')
         ->where('news.deleted_at', null);
@@ -62,6 +63,20 @@ class NewsController extends Controller
 
         if ($request->is_publish) {
             $items->where('news.is_publish',$request->is_publish);
+        }
+
+        if ($request->lang) {
+            if($request->lang == 'en')
+            $items->whereNotNull('news.title_en');
+        }
+
+        if ($request->year) {
+            $items->whereYear('news.created_at', $request->year);
+        }
+
+
+        if ($request->month) {
+            $items->whereMonth('news.created_at', $request->month);
         }
 
         if ($request->created_at) {
@@ -183,7 +198,7 @@ class NewsController extends Controller
         $item = News::where('id', $id)->first();
 
         $pathNews = null;
-        if(($request->news_file != "") && ($request->news_file != 'null')){
+        if(($request->news_file != "") && ($request->news_file != 'null') && ($request->news_file != 'undefined')){
             $fileNameNews = 'news-'.rand(10,100).'-'.$request->news_file->getClientOriginalName();
             $pathNews = '/news/'.$fileNameNews;
             Storage::disk('public')->put($pathNews, file_get_contents($request->news_file));
@@ -192,12 +207,12 @@ class NewsController extends Controller
         }
 
         $pathNewsEN = null;
-        if(($request->news_en_file != "") && ($request->news_en_file != 'null')){
+        if(($request->news_en_file != "") && ($request->news_en_file != 'null') && ($request->news_en_file != 'undefined')){
             $fileNameNewsEN = 'news-en-'.rand(10,100).'-'.$request->news_en_file->getClientOriginalName();
             $pathNewsEN = '/news/en/'.$fileNameNewsEN;
             Storage::disk('public')->put($pathNewsEN, file_get_contents($request->news_en_file));
         }else{
-            $pathNewsEN  = $item-news_en_file;
+            $pathNewsEN  = $item->news_en_file;
         }
 
 

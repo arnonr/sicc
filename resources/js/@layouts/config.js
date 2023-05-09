@@ -4,7 +4,7 @@ import { breakpointsVuetify } from '@vueuse/core'
 export const config = {
   app: {
     title: 'Title',
-    logo: h('img', { src: '/src/assets/logos/logo-sicc.jpeg' }),
+    logo: h('img', { src: '/src/assets/logos/logo-sicc.png' }),
     // logo: h('img', { src: '/src/assets/logo.svg' }),
 
     // logo: () => h('img', { src: 'assets/colored-logo.png' }, null),

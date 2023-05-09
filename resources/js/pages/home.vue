@@ -3,7 +3,6 @@ import icon1 from "@images/icons/home/icon1.png";
 import icon2 from "@images/icons/home/icon2.png";
 import icon3 from "@images/icons/home/icon3.png";
 import icon4 from "@images/icons/home/icon4.png";
-import pages1 from "@images/pages/1.png";
 
 import { register } from "swiper/element/bundle";
 // import Swiper, { Navigation, Pagination } from 'swiper';
@@ -18,7 +17,7 @@ const homeStore = useHomeStore();
 const { t } = useI18n();
 
 const { mobile } = useDisplay();
-const isOverLay = ref(true);
+const isOverlay = ref(true);
 
 register();
 
@@ -56,8 +55,10 @@ const cardIcon = [
 
 // 👉 Fetching Banner
 const banners = ref([]);
+const news = ref([]);
+const newsTypes = ref([]);
 const fetchBanners = () => {
-  isOverLay.value = true;
+  isOverlay.value = true;
   homeStore
     .fetchBanners({
       is_publish: 1,
@@ -65,7 +66,7 @@ const fetchBanners = () => {
     .then((response) => {
       if (response.data.message == "success") {
         banners.value = response.data.data;
-        isOverLay.value = false;
+        isOverlay.value = false;
         // options.value.type = "loop";
       } else {
         console.log("error");
@@ -73,10 +74,88 @@ const fetchBanners = () => {
     })
     .catch((error) => {
       console.error(error);
-      isOverLay.value = false;
+      isOverlay.value = false;
     });
 };
 fetchBanners();
+
+const fetchNewsTypes = () => {
+  isOverlay.value = true;
+  homeStore
+    .fetchNewsTypes({
+      is_publish: 1,
+    })
+    .then((response) => {
+      if (response.data.message == "success") {
+        newsTypes.value = response.data.data;
+
+        newsTypes.value.unshift({
+          id: 99,
+          title: "ข่าวทั้งหมด",
+          title_en: "All News",
+        });
+        fetchNews();
+        isOverlay.value = false;
+        // options.value.type = "loop";
+      } else {
+        console.log("error");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      isOverlay.value = false;
+    });
+};
+
+fetchNewsTypes();
+
+const fetchNews = () => {
+  isOverlay.value = true;
+  homeStore
+    .fetchNews({
+      is_publish: 1,
+    })
+    .then((response) => {
+      if (response.data.message == "success") {
+        news.value = response.data.data;
+        newsTypes.value = newsTypes.value.map((it) => {
+          if (it.id == 99) {
+            it.news = news.value.filter((x) => {
+              let isEng = true;
+              if (lang.value != "th") {
+                if (x.title_en == null || x.title_en == "") {
+                  isEng = false;
+                }
+              }
+              return isEng;
+            });
+
+            it.news = it.news.slice(0, 8);
+          } else {
+            it.news = news.value.filter((x) => {
+              let isEng = true;
+              if (lang.value != "th") {
+                if (x.title_en == null || x.title_en == "") {
+                  isEng = false;
+                }
+              }
+              return x.news_type_id == it.id && isEng;
+            });
+
+            it.news = it.news.slice(0, 8);
+          }
+          return it;
+        });
+        isOverlay.value = false;
+      } else {
+        console.log("error");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      isOverlay.value = false;
+    });
+};
 
 const currentTab = ref(0);
 
@@ -90,6 +169,10 @@ if (localStorage.getItem("currentLang") === "en") {
 //   spaceBetween: 100,
 //   modules: [Navigation, Pagination],
 // });
+
+const strippedTag = (string) => {
+  return string.replace(/<\/?[^>]+>/gi, " ");
+};
 </script>
 <style lang="scss">
 button.splide__pagination__page.is-active {
@@ -147,7 +230,6 @@ button.splide__pagination__page.is-active {
   font-size: 10px !important;
   font-weight: 700px;
 }
-
 </style>
 <template>
   <div>
@@ -225,45 +307,49 @@ button.splide__pagination__page.is-active {
           <!-- <VCard> -->
           <!--  -->
           <VTabs v-model="currentTab">
-            <VTab>{{ t("All News") }}</VTab>
-            <VTab>{{ t("News Release") }}</VTab>
-            <VTab>{{ t("Training") }}</VTab>
+            <VTab v-for="nt in newsTypes">{{
+              lang == "th" ? nt.title : nt.title_en
+            }}</VTab>
           </VTabs>
           <VDivider />
 
           <VWindow v-model="currentTab" class="mt-5 mb-5">
-            <VWindowItem v-for="item in 3" :key="item">
+            <VWindowItem v-for="nt in newsTypes" :key="nt.id">
               <!-- {{ tabItemContent }} -->
               <!-- News -->
               <VRow>
-                <VCol cols="12" sm="6" md="3" v-for="item1 in 8" :key="item1">
+                <VCol
+                  cols="12"
+                  sm="6"
+                  md="3"
+                  v-for="nw in nt.news"
+                  :key="nw.id"
+                >
                   <VCard
                     @click="$router.push({ name: 'apps-email' })"
                     class="news-card cursor-pointer"
                   >
-                    <VImg :src="pages1" cover />
+                    <VImg
+                      :src="lang == 'th' ? nw.news_file : nw.news_en_file"
+                      cover
+                    />
 
-                    <VCardItem>
-                      <VCardTitle>Influencing The Influencer</VCardTitle>
-                    </VCardItem>
-
-                    <VCardText>
-                      Cancun is back, better than ever! Over a hundred Mexico
-                      resorts have reopened and the state tourism minister
+                    <VCardText style="min-height: 200px !important">
+                      <h2 style="font-size: 1.25rem; font-weight: 500">
+                        {{ lang == "th" ? nw.title : nw.title_en }}
+                      </h2>
                     </VCardText>
-
                     <VCardActions>
                       <VBtn
                         @click="isCardDetailsVisible = !isCardDetailsVisible"
                       >
                         {{ t("Details") }} <VIcon icon="tabler-arrow-right" />
                       </VBtn>
-
                       <VSpacer />
                       <span class="news-tag"
                         ><VIcon icon="tabler-tag" />
-                        {{ t("News Release") }}</span
-                      >
+                        {{ lang == "th" ? nw.news_type_title : nt.news_type_title_en }}
+                      </span>
                     </VCardActions>
                   </VCard>
                 </VCol>
@@ -276,7 +362,12 @@ button.splide__pagination__page.is-active {
 
       <v-row>
         <v-col>
-          <VBtn color="primary" class="float-right" variant="flat">
+          <VBtn
+            color="primary"
+            class="float-right"
+            variant="flat"
+            @click="$router.push({ name: 'news' })"
+          >
             <VIcon start icon="tabler-news" /> {{ t("All News") }}
           </VBtn>
         </v-col>

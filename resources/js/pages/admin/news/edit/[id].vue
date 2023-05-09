@@ -1,30 +1,74 @@
 <script setup>
 import { requiredValidator } from "@validators";
 
-import router from "../../../../router";
-import { useBannerStore } from "../useBannerStore";
-// const route = useRoute();
+import { useNewsStore } from "../useNewsStore";
+
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
+
+import dayjs from "dayjs";
+import "dayjs/locale/th";
+import buddhistEra from "dayjs/plugin/buddhistEra";
+
+import "froala-editor/css/froala_editor.pkgd.min.css";
+import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min.js";
+import { useRoute, useRouter } from 'vue-router';
+dayjs.extend(buddhistEra);
+
 const route = useRoute();
-const bannerStore = useBannerStore();
+const router = useRouter()
+const newsStore = useNewsStore();
 
 const item = ref({
   id: null,
   title: "",
   title_en: "",
-  link_url: "",
-  link_url_en: "",
+  news_type_id: "",
+  news_file: [],
+  news_file_old: "",
+  news_en_file: [],
+  news_en_file_old: "",
+  detail: "",
+  detail_en: "",
   is_publish: 1,
-  banner_file: [],
-  banner_file_old: "",
-  banner_en_file: [],
-  banner_en_file_old: "",
+  created_at: dayjs(),
 });
+
 const isOverlay = ref(false);
 const isFormValid = ref(false);
 const refForm = ref();
 
-bannerStore
-  .fetchBanner({
+const selectOptions = ref({
+  news_types: [],
+});
+
+const fetchNewsTypes = () => {
+  newsStore
+    .fetchNewsTypes({
+      is_publish: 1,
+    })
+    .then((response) => {
+      if (response.data.message == "success") {
+        selectOptions.value.news_types = response.data.data.map((d) => {
+          return {
+            title: d.title,
+            value: d.id,
+          };
+        });
+        isOverlay.value = false;
+      } else {
+        console.log("error");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      isOverlay.value = false;
+    });
+};
+fetchNewsTypes();
+
+newsStore
+  .fetchNews({
     id: route.params.id,
   })
   .then((response) => {
@@ -32,53 +76,56 @@ bannerStore
       const { data } = response.data;
       item.value = { ...data };
 
-      item.value.banner_file_old = null;
-      if (data.banner_file != null) {
-        item.value.banner_file_old = data.banner_file;
+      item.value.news_file_old = null;
+      if (data.news_file != null) {
+        item.value.news_file_old = data.news_file;
       }
-      item.value.banner_file = [];
-      console.log(item.value);
+      item.value.news_file = [];
 
-      item.value.banner_en_file_old = null;
-      if (data.banner_en_file != null) {
-        item.value.banner_en_file_old = data.banner_en_file;
+      item.value.news_en_file_old = null;
+      if (data.news_en_file != null) {
+        item.value.news_en_file_old = data.news_en_file;
       }
-      item.value.banner_en_file = [];
+      item.value.news_en_file = [];
 
-      console.log(item.value);
+      initFroala();
     } else {
       console.log("error");
     }
   })
   .catch((error) => {
     console.error(error);
-    isOverLay.value = false;
+    isOverlay.value = false;
   });
 
 const onSubmit = () => {
   isOverlay.value = true;
   refForm.value?.validate().then(({ valid }) => {
     if (valid) {
-      bannerStore
-        .editBanner({
+      newsStore
+        .editNews({
           ...item.value,
-          banner_file:
-            item.value.banner_file.length !== 0
-              ? item.value.banner_file[0]
-              : null,
-          banner_en_file:
-            item.value.banner_en_file.length !== 0
-              ? item.value.banner_en_file[0]
-              : null,
+          news_file:
+            item.value.news_file != null ? item.value.news_file[0] : null,
+
+          news_en_file:
+            item.value.news_en_file != null ? item.value.news_en_file[0] : null,
+
+          created_at:
+            item.value.created_at != ""
+              ? dayjs(item.value.created_at).format("YYYY-MM-DD")
+              : dayjs().format("YYYY-MM-DD"),
         })
         .then((response) => {
           if (response.data.message == "success") {
             localStorage.setItem("updated", 1);
+            console.log("News Edit Success");
             nextTick(() => {
-              // refForm.value?.reset();
-              // refForm.value?.resetValidation();
+              // router.push({
+              //   "/"
+              // })
               router.push({
-                path: "/admin/banner/view/" + response.data.data.id,
+                path: "/admin/news/view/" + response.data.data.id,
               });
             });
           } else {
@@ -88,15 +135,192 @@ const onSubmit = () => {
         })
         .catch((error) => {
           console.error(error);
-          //   isOverLay.value = false;
+          //   isOverlay.value = false;
         });
     }
     isOverlay.value = false;
   });
 };
 
+const format = (date) => {
+  const day = dayjs(date).locale("th").format("DD");
+  const month = dayjs(date).locale("th").format("MMM");
+  const year = date.getFullYear() + 543;
+
+  return `${day} ${month} ${year}`;
+};
+
+const initFroala = () => {
+  new FroalaEditor("#detail", {
+    height: 300,
+    // inlineMode: false,
+    pastePlain: true,
+    paragraphy: false,
+    quickInsertEnabled: false,
+    toolbarButtons: [
+      "undo",
+      "redo",
+      "fullscreen",
+      "|",
+      "fontSize",
+      "color",
+      "bold",
+      "italic",
+      "underline",
+      "inlineClass",
+      "|",
+      "paragraphFormat",
+      "align",
+      "outdent",
+      "indent",
+      "|",
+      "formatOL",
+      "formatUL",
+      "quote",
+      "-",
+      "insertLink",
+      "insertImage",
+      "insertVideo",
+      "insertFile",
+      "insertTable",
+      "|",
+      "fontAwesome",
+      "insertHR",
+      "selectAll",
+      "clearFormatting",
+      "|",
+      "print",
+      "getPDF",
+      "html",
+    ],
+    // Change buttons for XS screen.
+    toolbarButtonsXS: [
+      ["undo", "redo"],
+      ["bold", "italic", "underline"],
+    ],
+    placeholderText: "",
+    attribution: false,
+    key: "enter-your-license-key-here",
+    disableRightClick: true,
+
+    imageUploadURL: "http://localhost:8115/api/froala/image",
+    // imageAllowedTypes: ['jpeg', 'jpg', 'png'],
+
+    fileUploadURL: "http://localhost:8115/api/froala/document",
+    videoUploadURL: "http://localhost:8115/api/froala/video",
+
+    // fileUpload: false,
+    // imageUpload: false,
+    imagePaste: false,
+    imagePasteProcess: false,
+    imageResize: true,
+    crossDomain: true,
+    events: {
+      keyup: function (inputEvent) {
+        item.value.detail = this.html.get();
+      },
+      click: function (clickEvent) {
+        item.value.detail = this.html.get();
+      },
+      "commands.after": function (cmd, param1, param2) {
+        item.value.detail = this.html.get();
+      },
+      "paste.after": function (pasteEvent) {
+        item.value.detail = this.html.get();
+      },
+      initialized: function () {
+        this.html.insert(item.value.detail);
+      },
+    },
+  });
+
+  new FroalaEditor("#detail_en", {
+    height: 300,
+    // inlineMode: false,
+    pastePlain: true,
+    paragraphy: false,
+    quickInsertEnabled: false,
+    toolbarButtons: [
+      "undo",
+      "redo",
+      "fullscreen",
+      "|",
+      "fontSize",
+      "color",
+      "bold",
+      "italic",
+      "underline",
+      "inlineClass",
+      "|",
+      "paragraphFormat",
+      "align",
+      "outdent",
+      "indent",
+      "|",
+      "formatOL",
+      "formatUL",
+      "quote",
+      "-",
+      "insertLink",
+      "insertImage",
+      "insertVideo",
+      "insertFile",
+      "insertTable",
+      "|",
+      "fontAwesome",
+      "insertHR",
+      "selectAll",
+      "clearFormatting",
+      "|",
+      "print",
+      "getPDF",
+      "html",
+    ],
+    // Change buttons for XS screen.
+    toolbarButtonsXS: [
+      ["undo", "redo"],
+      ["bold", "italic", "underline"],
+    ],
+    placeholderText: "",
+    attribution: false,
+    key: "enter-your-license-key-here",
+    disableRightClick: true,
+
+    imageUploadURL: "http://localhost:8115/api/froala/image",
+    // imageAllowedTypes: ['jpeg', 'jpg', 'png'],
+
+    fileUploadURL: "http://localhost:8115/api/froala/document",
+    videoUploadURL: "http://localhost:8115/api/froala/video",
+
+    // fileUpload: false,
+    // imageUpload: false,
+    imagePaste: false,
+    imagePasteProcess: false,
+    imageResize: true,
+    crossDomain: true,
+    events: {
+      keyup: function (inputEvent) {
+        item.value.detail_en = this.html.get();
+      },
+      click: function (clickEvent) {
+        item.value.detail_en = this.html.get();
+      },
+      "commands.after": function (cmd, param1, param2) {
+        item.value.detail_en = this.html.get();
+      },
+      "paste.after": function (pasteEvent) {
+        item.value.detail_en = this.html.get();
+      },
+      initialized: function () {
+        this.html.insert(item.value.detail_en);
+      },
+    },
+  });
+};
+
 onMounted(() => {
-  window.scrollTo(0,0);
+  // initFroala();
+  window.scrollTo(0, 0);
 });
 </script>
 
@@ -106,13 +330,14 @@ onMounted(() => {
       <!-- Search -->
       <VRow>
         <VCol>
-          <h2>Edit Banner</h2>
+          <h2>Edit News</h2>
+          <!-- Froala -->
           <hr />
         </VCol>
       </VRow>
       <VRow class="mt-6">
         <VCol>
-          <VCard title="" class="pb-5 pt-5">
+          <VCard title="card" class="pb-5 pt-5">
             <VCardText>
               <VForm
                 ref="refForm"
@@ -127,23 +352,16 @@ onMounted(() => {
                   <VCol cols="12">
                     <VRow no-gutters>
                       <VCol cols="12" md="3">
-                        <label for="link_url">ไฟล์ Banner (1920*370)</label>
+                        <label for="news_type_id">ประเภทข่าว*</label>
                       </VCol>
 
-                      <VCol cols="12" md="7">
-                        <VFileInput
-                          label="Upload Banner"
-                          id="banner_file"
-                          v-model="item.banner_file"
-                          persistent-placeholder
-                          suffix="@gmail.com"
+                      <VCol cols="12" md="9">
+                        <VSelect
+                          id="news_type_id"
+                          v-model="item.news_type_id"
+                          label="News Type"
+                          :items="selectOptions.news_types"
                         />
-                      </VCol>
-
-                      <VCol cols="12" md="2" class="pl-2">
-                        <a :href="item.banner_file_old" target="_blank">
-                          <VBtn style="width: 100%"> View Old File </VBtn></a
-                        >
                       </VCol>
                     </VRow>
                   </VCol>
@@ -151,7 +369,7 @@ onMounted(() => {
                   <VCol cols="12">
                     <VRow no-gutters>
                       <VCol cols="12" md="3">
-                        <label for="title">ชื่อ Banner</label>
+                        <label for="title">หัวข้อข่าว*</label>
                       </VCol>
 
                       <VCol cols="12" md="9">
@@ -169,15 +387,62 @@ onMounted(() => {
                   <VCol cols="12">
                     <VRow no-gutters>
                       <VCol cols="12" md="3">
-                        <label for="link_url">ลิงค์</label>
+                        <label for="news_file">รูปปกข่าว</label>
+                      </VCol>
+
+                      <VCol cols="12" md="7">
+                        <VFileInput
+                          label="Upload Photo"
+                          id="news_file"
+                          v-model="item.news_file"
+                          persistent-placeholder
+                        />
+                      </VCol>
+
+                      <VCol cols="12" md="2" class="pl-2">
+                        <a
+                          :href="
+                            item.news_file_old != null
+                              ? item.news_file_old
+                              : '/'
+                          "
+                          target="_blank"
+                        >
+                          <VBtn style="width: 100%"> View Old File </VBtn></a
+                        >
+                      </VCol>
+                    </VRow>
+                  </VCol>
+
+                  <VCol cols="12">
+                    <VRow no-gutters>
+                      <VCol cols="12" md="3">
+                        <label for="detail">เนื้อหาข่าว</label>
                       </VCol>
 
                       <VCol cols="12" md="9">
-                        <VTextField
-                          id="link_url"
-                          v-model="item.link_url"
-                          placeholder="Link"
-                          persistent-placeholder
+                        <div id="detail"></div>
+                      </VCol>
+                    </VRow>
+                  </VCol>
+
+                  <VCol cols="12">
+                    <VRow no-gutters>
+                      <!-- 👉 Mobile -->
+                      <VCol cols="12" md="3">
+                        <label for="is_publish">สถานะ*</label>
+                      </VCol>
+
+                      <VCol cols="12" md="9">
+                        <VSelect
+                          id="is_publish"
+                          v-model="item.is_publish"
+                          :rules="[requiredValidator]"
+                          label="Pubish"
+                          :items="[
+                            { title: 'Publish', value: 1 },
+                            { title: 'UnPublish', value: 0 },
+                          ]"
                         />
                       </VCol>
                     </VRow>
@@ -187,19 +452,25 @@ onMounted(() => {
                     <VRow no-gutters>
                       <!-- 👉 Mobile -->
                       <VCol cols="12" md="3">
-                        <label for="is_publish">สถานะ</label>
+                        <label for="is_publish">วันที่ลงข่าว*</label>
                       </VCol>
 
                       <VCol cols="12" md="9">
-                        <VSelect
-                          id="is_publish"
-                          v-model="item.is_publish"
-                          label="Pubish"
-                          :items="[
-                            { title: 'Publish', value: 1 },
-                            { title: 'UnPublish', value: 0 },
-                          ]"
-                        />
+                        <VueDatePicker
+                          v-model="item.created_at"
+                          :enable-time-picker="false"
+                          locale="th"
+                          auto-apply
+                          :format="format"
+                          :rules="[requiredValidator]"
+                        >
+                          <template #year-overlay-value="{ text }">
+                            {{ parseInt(text) + 543 }}
+                          </template>
+                          <template #year="{ year }">
+                            {{ year + 543 }}
+                          </template>
+                        </VueDatePicker>
                       </VCol>
                     </VRow>
                   </VCol>
@@ -215,14 +486,31 @@ onMounted(() => {
                   <VCol cols="12">
                     <VRow no-gutters>
                       <VCol cols="12" md="3">
-                        <label for="banner_en_file">ไฟล์ Banner (1920*370)</label>
+                        <label for="title_en">หัวข้อข่าว</label>
+                      </VCol>
+
+                      <VCol cols="12" md="9">
+                        <VTextField
+                          id="title_en"
+                          v-model="item.title_en"
+                          placeholder="Title EN"
+                          persistent-placeholder
+                        />
+                      </VCol>
+                    </VRow>
+                  </VCol>
+
+                  <VCol cols="12">
+                    <VRow no-gutters>
+                      <VCol cols="12" md="3">
+                        <label for="news_en_file">รูปปกข่าว</label>
                       </VCol>
 
                       <VCol cols="12" md="7">
                         <VFileInput
-                          label="Upload Banner"
-                          id="banner_en_file"
-                          v-model="item.banner_en_file"
+                          label="Upload Photo"
+                          id="news_en_file"
+                          v-model="item.news_en_file"
                           persistent-placeholder
                         />
                       </VCol>
@@ -230,8 +518,8 @@ onMounted(() => {
                       <VCol cols="12" md="2" class="pl-2">
                         <a
                           :href="
-                            item.banner_en_file_old != null
-                              ? item.banner_en_file_old
+                            item.news_en_file_old != null
+                              ? item.news_en_file_old
                               : '/'
                           "
                           target="_blank"
@@ -245,43 +533,18 @@ onMounted(() => {
                   <VCol cols="12">
                     <VRow no-gutters>
                       <VCol cols="12" md="3">
-                        <label for="title_en">ชื่อ Banner</label>
+                        <label for="detail_en">เนื้อหาข่าว</label>
                       </VCol>
 
                       <VCol cols="12" md="9">
-                        <VTextField
-                          id="title_en"
-                          v-model="item.title_en"
-                          placeholder="Title"
-                          persistent-placeholder
-                        />
+                        <div id="detail_en"></div>
                       </VCol>
                     </VRow>
                   </VCol>
 
-                  <VCol cols="12">
-                    <VRow no-gutters>
-                      <VCol cols="12" md="3">
-                        <label for="link_url_en">ลิงค์</label>
-                      </VCol>
-
-                      <VCol cols="12" md="9">
-                        <VTextField
-                          id="link_url_en"
-                          v-model="item.link_url_en"
-                          placeholder="Link"
-                          persistent-placeholder
-                        />
-                      </VCol>
-                    </VRow>
-                  </VCol>
-
-                  <!-- 👉 submit and reset button -->
+                  <!-- 👉 submit button -->
                   <VCol offset-md="3" cols="12" md="9" class="d-flex gap-4">
                     <VBtn type="submit"> Submit </VBtn>
-                    <!-- <VBtn color="secondary" variant="tonal" type="reset">
-                      Reset
-                    </VBtn> -->
                   </VCol>
                 </VRow>
               </VForm>

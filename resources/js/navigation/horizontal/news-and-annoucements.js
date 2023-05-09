@@ -1,7 +1,7 @@
 export default [
     {
         title: 'News & Annoucements',
-        to: 'apps-email',
+        to: 'news',
         icon: { icon: 'tabler-news' },
         action: 'read',
         subject: 'Auth',
