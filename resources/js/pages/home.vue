@@ -326,7 +326,7 @@ button.splide__pagination__page.is-active {
                   :key="nw.id"
                 >
                   <VCard
-                    @click="$router.push({ name: 'apps-email' })"
+                    @click="$router.push({ name: 'news-id',params: {id: nw.id} })"
                     class="news-card cursor-pointer"
                   >
                     <VImg
