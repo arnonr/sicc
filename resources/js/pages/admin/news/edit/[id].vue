@@ -534,6 +534,7 @@ onMounted(() => {
                           style="width: 100%"
                           :props="{
                             doneButtonHandler: null,
+                            hideCancelButton: true,
                             showRemoveButtonAfterComplete: true,
                           }"
                         />
