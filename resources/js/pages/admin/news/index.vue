@@ -106,7 +106,6 @@ const fetchNewsTypes = () => {
             value: d.id,
           };
         });
-        console.log(selectOptions.value.news_type);
         isOverlay.value = false;
       } else {
         console.log("error");

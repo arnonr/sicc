@@ -1,7 +1,7 @@
 <script setup>
 import { requiredValidator } from "@validators";
 
-import { useRouter } from 'vue-router';
+import { useRouter } from "vue-router";
 import { useNewsStore } from "./useNewsStore";
 
 import VueDatePicker from "@vuepic/vue-datepicker";
@@ -13,8 +13,76 @@ import buddhistEra from "dayjs/plugin/buddhistEra";
 
 import "froala-editor/css/froala_editor.pkgd.min.css";
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min.js";
-// const route = useRoute();
-const router = useRouter()
+
+import Uppy from "@uppy/core";
+import { Dashboard } from "@uppy/vue";
+
+// Don't forget the CSS: core and UI components + plugins you are using
+import "@uppy/core/dist/style.css";
+import "@uppy/dashboard/dist/style.css";
+import XHRUpload from "@uppy/xhr-upload";
+
+// Uppy
+const r = (Math.random() + 1).toString(36).substring(7);
+
+const uppy = new Uppy({
+  meta: { news_id: null, secret_key: r, news_gallery_id: null },
+  debug: true,
+  // autoProceed: true,
+  restrictions: {
+    // maxFileSize: this.maxFileSizeInBytes,
+    // minNumberOfFiles: 1,
+    // maxNumberOfFiles: 1,
+    allowedFileTypes: [
+      "image/*",
+      "video/*",
+      // "application/msword",
+      // "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      // "application/pdf",
+    ],
+  },
+}).use(XHRUpload, {
+  endpoint: "http://localhost:8115/api/news-gallery/uppy",
+  fieldName: "file",
+});
+
+// complete คือ upload เสร็จ
+uppy.on("complete", (result) => {
+  // console.log("successful files:", result.successful);
+  // console.log("failed files:", result.failed);
+  // console.log("FREEDOnm");
+});
+
+uppy.on("upload-success", (file, response) => {
+  uppy.setFileMeta(file.id, {
+    url: response.body.link,
+    news_id: response.body.news_id,
+    news_gallery_id: response.body.news_gallery_id,
+  });
+});
+
+uppy.on("file-removed", (file, reason) => {
+  // console.log(file, reason);
+  if (file.meta.news_gallery_id != null) {
+    newsStore
+      .deleteGallery({
+        id: file.meta.news_gallery_id,
+      })
+      .then((response) => {
+        if (response.data.message == "success") {
+          console.log("success")
+        } else {
+          console.log("error");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        isOverlay.value = false;
+      });
+  }
+});
+
+const router = useRouter();
 
 dayjs.extend(buddhistEra);
 
@@ -25,8 +93,8 @@ const item = ref({
   title: "",
   title_en: "",
   news_type_id: "",
-  news_file: "",
-  news_en_file: "",
+  news_file: [],
+  news_en_file: [],
   detail: "",
   detail_en: "",
   is_publish: 1,
@@ -76,7 +144,9 @@ const onSubmit = () => {
       newsStore
         .addNews({
           ...item.value,
-          news_file: item.value.news_file != null ? item.value.news_file[0] : null,
+          secret_key: r,
+          news_file:
+            item.value.news_file != null ? item.value.news_file[0] : null,
 
           news_en_file:
             item.value.news_en_file != null ? item.value.news_en_file[0] : null,
@@ -89,7 +159,7 @@ const onSubmit = () => {
         .then((response) => {
           if (response.data.message == "success") {
             localStorage.setItem("added", 1);
-            console.log("News Add Success")
+            console.log("News Add Success");
             nextTick(() => {
               router.push({
                 path: "/admin/news/view/" + response.data.data.id,
@@ -170,11 +240,11 @@ const initFroala = () => {
     key: "enter-your-license-key-here",
     disableRightClick: true,
 
-    imageUploadURL: 'http://localhost:8115/api/froala/image',
-    imageAllowedTypes: ['jpeg', 'jpg', 'png'],
+    imageUploadURL: "http://localhost:8115/api/froala/image",
+    imageAllowedTypes: ["jpeg", "jpg", "png"],
 
-    fileUploadURL: 'http://localhost:8115/api/froala/document',
-    videoUploadURL: 'http://localhost:8115/api/froala/video',
+    fileUploadURL: "http://localhost:8115/api/froala/document",
+    videoUploadURL: "http://localhost:8115/api/froala/video",
 
     // fileUpload: false,
     // imageUpload: false,
@@ -250,11 +320,11 @@ const initFroala = () => {
     key: "enter-your-license-key-here",
     disableRightClick: true,
 
-    imageUploadURL: 'http://localhost:8115/api/froala/image',
+    imageUploadURL: "http://localhost:8115/api/froala/image",
     // imageAllowedTypes: ['jpeg', 'jpg', 'png'],
 
-    fileUploadURL: 'http://localhost:8115/api/froala/document',
-    videoUploadURL: 'http://localhost:8115/api/froala/video',
+    fileUploadURL: "http://localhost:8115/api/froala/document",
+    videoUploadURL: "http://localhost:8115/api/froala/video",
 
     // fileUpload: false,
     // imageUpload: false,
@@ -279,12 +349,16 @@ const initFroala = () => {
   });
 };
 
-
 onMounted(() => {
   initFroala();
-  window.scrollTo(0,0);
+  window.scrollTo(0, 0);
 });
 </script>
+<style lang="scss">
+.uppy-Dashboard-inner {
+  width: 100% !important;
+}
+</style>
 <template>
   <main class="layout-page-content mb-6 mt-6">
     <section>
@@ -350,7 +424,6 @@ onMounted(() => {
                       <VCol cols="12" md="3">
                         <label for="news_file">รูปปกข่าว*</label>
                       </VCol>
-
                       <VCol cols="12" md="9">
                         <VFileInput
                           label="Upload Picture"
@@ -358,6 +431,25 @@ onMounted(() => {
                           id="news_file"
                           v-model="item.news_file"
                           persistent-placeholder
+                        />
+                      </VCol>
+                    </VRow>
+                  </VCol>
+
+                  <VCol cols="12">
+                    <VRow no-gutters>
+                      <VCol cols="12" md="3">
+                        <label for="news_file">แกลลอรี</label>
+                      </VCol>
+                      <VCol cols="12" md="9">
+                        <Dashboard
+                          :uppy="uppy"
+                          ref="dash"
+                          style="width: 100%"
+                          :props="{
+                            doneButtonHandler: null,
+                            showRemoveButtonAfterComplete: true,
+                          }"
                         />
                       </VCol>
                     </VRow>

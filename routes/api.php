@@ -7,6 +7,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BannerController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\NewsGalleryController;
 use App\Http\Controllers\NewsTypeController;
 use App\Http\Controllers\FroalaController;
 use App\Http\Controllers\AboutUsController;
@@ -64,6 +65,16 @@ Route::group(['prefix' => 'news'], function () {
   Route::put('/{id}', [NewsController::class, 'edit']);
   Route::delete('/{id}', [NewsController::class, 'delete']);
 });
+
+Route::group(['prefix' => 'news-gallery'], function () {
+  Route::get('/{id}', [NewsGalleryController::class, 'get']);
+  Route::get('/', [NewsGalleryController::class, 'getAll']);
+  Route::post('/', [NewsGalleryController::class, 'add']);
+  Route::put('/{id}', [NewsGalleryController::class, 'edit']);
+  Route::delete('/{id}', [NewsGalleryController::class, 'delete']);
+  Route::post('/uppy', [NewsGalleryController::class, 'uppy']);
+});
+
 
 Route::group(['prefix' => 'news-type'], function () {
   Route::get('/{id}', [NewsTypeController::class, 'get']);

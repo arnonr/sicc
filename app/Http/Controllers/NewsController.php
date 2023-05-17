@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\News;
+use App\Models\NewsGallery;
 use Validator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -180,6 +181,13 @@ class NewsController extends Controller
         $item->created_by = 'arnonr';
         $item->created_at = $request->created_at;
         $item->save();
+
+        $ng = NewsGallery::where('secret_key',$request->secret_key)->get();
+
+        foreach($ng as $v){
+            $v->news_id = $item->id;
+            $v->save();
+        }
 
         $responseData = [
             'message' => 'success',

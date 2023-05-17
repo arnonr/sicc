@@ -12,11 +12,63 @@ import buddhistEra from "dayjs/plugin/buddhistEra";
 
 import "froala-editor/css/froala_editor.pkgd.min.css";
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min.js";
-import { useRoute, useRouter } from 'vue-router';
-dayjs.extend(buddhistEra);
 
+import Uppy from "@uppy/core";
+import { Dashboard } from "@uppy/vue";
+
+// Don't forget the CSS: core and UI components + plugins you are using
+import "@uppy/core/dist/style.css";
+import "@uppy/dashboard/dist/style.css";
+import XHRUpload from "@uppy/xhr-upload";
+
+import { useRoute, useRouter } from "vue-router";
+dayjs.extend(buddhistEra);
 const route = useRoute();
-const router = useRouter()
+const router = useRouter();
+
+// Uppy
+const r = (Math.random() + 1).toString(36).substring(7);
+
+const uppy = new Uppy({
+  meta: { news_id: route.params.id, secret_key: r, news_gallery_id: null },
+  debug: true,
+  restrictions: {
+    allowedFileTypes: ["image/*", "video/*"],
+  },
+}).use(XHRUpload, {
+  endpoint: "http://localhost:8115/api/news-gallery/uppy",
+  fieldName: "file",
+});
+
+uppy.on("upload-success", (file, response) => {
+  uppy.setFileMeta(file.id, {
+    url: response.body.link,
+    news_id: response.body.news_id,
+    news_gallery_id: response.body.news_gallery_id,
+  });
+});
+
+uppy.on("file-removed", (file, reason) => {
+  console.log(file, reason);
+  if (file.meta.news_gallery_id != null) {
+    newsStore
+      .deleteGallery({
+        id: file.meta.news_gallery_id,
+      })
+      .then((response) => {
+        if (response.data.message == "success") {
+          console.log("success");
+        } else {
+          console.log("error");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        isOverlay.value = false;
+      });
+  }
+});
+
 const newsStore = useNewsStore();
 
 const item = ref({
@@ -89,6 +141,7 @@ newsStore
       item.value.news_en_file = [];
 
       initFroala();
+      fetchNewsGallery();
     } else {
       console.log("error");
     }
@@ -97,6 +150,56 @@ newsStore
     console.error(error);
     isOverlay.value = false;
   });
+
+const fetchNewsGallery = () => {
+  newsStore
+    .fetchNewsGallery({
+      news_id: route.params.id,
+    })
+    .then(async (response) => {
+      if (response.data.message == "success") {
+        // For
+        let newsGallery = response.data.data;
+
+        for (let i = 0; i < newsGallery.length; i++) {
+          await fetch(newsGallery[i].news_gallery_file)
+            .then((response) => response.blob())
+            .then((blob) => {
+              uppy.addFile({
+                name: null,
+                type: blob.type,
+                data: blob,
+                meta: {
+                  relativePath: newsGallery[i].news_gallery_file,
+                  news_id: newsGallery[i].news_id,
+                  news_gallery_id: newsGallery[i].id,
+                  secret_key: newsGallery[i].secret_key,
+                  isRemote: true,
+                },
+                source: "Local",
+                isRemote: false,
+              });
+            });
+        }
+        //
+
+        //
+        uppy.getFiles().forEach((file) => {
+          uppy.setFileState(file.id, {
+            progress: { uploadComplete: true, uploadStarted: true },
+          });
+        });
+
+        isOverlay.value = false;
+      } else {
+        console.log("error");
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      isOverlay.value = false;
+    });
+};
 
 const onSubmit = () => {
   isOverlay.value = true;
@@ -323,6 +426,11 @@ onMounted(() => {
   window.scrollTo(0, 0);
 });
 </script>
+<style lang="scss">
+.uppy-Dashboard-inner {
+  width: 100% !important;
+}
+</style>
 
 <template>
   <main class="layout-page-content mb-6 mt-6">
@@ -410,6 +518,25 @@ onMounted(() => {
                         >
                           <VBtn style="width: 100%"> View Old File </VBtn></a
                         >
+                      </VCol>
+                    </VRow>
+                  </VCol>
+
+                  <VCol cols="12">
+                    <VRow no-gutters>
+                      <VCol cols="12" md="3">
+                        <label for="news_file">แกลลอรี</label>
+                      </VCol>
+                      <VCol cols="12" md="9">
+                        <Dashboard
+                          :uppy="uppy"
+                          ref="dash"
+                          style="width: 100%"
+                          :props="{
+                            doneButtonHandler: null,
+                            showRemoveButtonAfterComplete: true,
+                          }"
+                        />
                       </VCol>
                     </VRow>
                   </VCol>

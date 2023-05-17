@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\NewsGallery;
 use Illuminate\Http\Request;
 use Validator;
 use Illuminate\Support\Facades\DB;
@@ -104,5 +105,4 @@ class FroalaController extends Controller
         
         return response()->json($responseData, 200);
     }
-
 }
