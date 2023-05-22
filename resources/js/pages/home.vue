@@ -4,47 +4,28 @@ import icon2 from "@images/icons/home/icon2.png";
 import icon3 from "@images/icons/home/icon3.png";
 import icon4 from "@images/icons/home/icon4.png";
 
-import { register } from "swiper/element/bundle";
-// import Swiper, { Navigation, Pagination } from 'swiper';
-// import "swiper/css";
-// import "swiper/css/navigation";
-// import "swiper/css/pagination";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
 
+import { Navigation, Pagination, Scrollbar } from "swiper";
+import { Swiper, SwiperSlide } from "swiper/vue";
 import { useDisplay } from "vuetify";
 import { useHomeStore } from "./useHomeStore";
-// import { defineComponent } from "vue";
+// End Import
+
 const homeStore = useHomeStore();
 const { t } = useI18n();
-
 const { mobile } = useDisplay();
+const modules = [Navigation, Pagination, Scrollbar];
 const isOverlay = ref(true);
-
-register();
-
-onMounted(() => {
-  // const swiperEl = document.querySelector("swiper-container");
-  // // swiper parameters
-  // const swiperParams = {
-  //   slidesPerView: 1,
-  //   breakpoints: {
-  //     640: {
-  //       slidesPerView: 2,
-  //     },
-  //     1024: {
-  //       slidesPerView: 1,
-  //     },
-  //   },
-  //   on: {
-  //     init() {
-  //       // ...
-  //     },
-  //   },
-  // };
-  // // now we need to assign all parameters to Swiper element
-  // Object.assign(swiperEl, swiperParams);
-  // // and now initialize it
-  // swiperEl.initialize();
-});
+// 👉 Fetching Banner
+const banners = ref([{}, {}]);
+const news = ref([]);
+const newsTypes = ref([]);
+const currentTab = ref(0);
+const lang = ref("th");
 
 const cardIcon = [
   { title: "Sample Submission", icon: icon1 },
@@ -53,10 +34,12 @@ const cardIcon = [
   { title: "Department Facility", icon: icon4 },
 ];
 
-// 👉 Fetching Banner
-const banners = ref([]);
-const news = ref([]);
-const newsTypes = ref([]);
+onMounted(() => {});
+
+if (localStorage.getItem("currentLang") === "en") {
+  lang.value = localStorage.getItem("currentLang");
+}
+
 const fetchBanners = () => {
   isOverlay.value = true;
   homeStore
@@ -106,7 +89,6 @@ const fetchNewsTypes = () => {
       isOverlay.value = false;
     });
 };
-
 fetchNewsTypes();
 
 const fetchNews = () => {
@@ -156,34 +138,9 @@ const fetchNews = () => {
       isOverlay.value = false;
     });
 };
-
-const currentTab = ref(0);
-
-const lang = ref("th");
-if (localStorage.getItem("currentLang") === "en") {
-  lang.value = localStorage.getItem("currentLang");
-}
-
-// const swiper = new Swiper(".sicc-swiper", {
-//   speed: 400,
-//   spaceBetween: 100,
-//   modules: [Navigation, Pagination],
-// });
-
-const strippedTag = (string) => {
-  return string.replace(/<\/?[^>]+>/gi, " ");
-};
 </script>
+
 <style lang="scss">
-button.splide__pagination__page.is-active {
-  background-color: #ffcb05;
-  border: solid 1px #fff;
-}
-
-// .row-icon-home {
-//   background-color: #eee;
-// }
-
 .card-icon-home {
   background-color: #cccccc;
   border-radius: 0px;
@@ -212,10 +169,6 @@ button.splide__pagination__page.is-active {
     contrast(99%);
 }
 
-// .v-card--variant-elevated {
-//     box-shadow: none;
-// }
-
 .news-tag {
   color: #bbb;
   font-size: 0.7em;
@@ -225,25 +178,73 @@ button.splide__pagination__page.is-active {
   border: solid 1px #ddd;
 }
 
+.swiper-button-prev:after,
+.swiper-rtl .swiper-button-next:after {
+  color: #000;
+  font-size: 1.5em;
+  margin-left: -3px;
+  font-weight: 800;
+}
+
 .swiper-button-next:after,
-.swiper-button-prev:after {
-  font-size: 10px !important;
-  font-weight: 700px;
+.swiper-rtl .swiper-button-next:after {
+  color: #000;
+  font-size: 1.5em;
+  margin-left: 3px;
+  font-weight: 800;
+}
+
+.swiper-button-next {
+  border-radius: 100% !important;
+  width: 2.8em;
+  background: #ffcb05;
+  transform: scale(0.7);
+  @media only screen and (max-width: 600px) {
+    transform: scale(0.4);
+  }
+}
+
+.swiper-button-prev {
+  border-radius: 100% !important;
+  width: 2.8em;
+  margin-left: -2px;
+  background: #ffcb05;
+  transform: scale(0.7);
+  @media only screen and (max-width: 600px) {
+    transform: scale(0.4);
+  }
+}
+.swiper-button-next,
+.swiper-rtl .swiper-button-prev {
+  right: var(--swiper-navigation-sides-offset, 0px);
+}
+
+.swiper-button-prev,
+.swiper-rtl .swiper-button-next {
+  left: var(--swiper-navigation-sides-offset, 0px);
+}
+
+.swiper-pagination-bullet-active {
+  background: #ffcb05;
 }
 </style>
+<!--  -->
 <template>
   <div>
     <!-- tp-Banner -->
-    <swiper-container
-      slides-per-view="1"
-      speed="500"
-      loop="true"
-      css-mode="true"
-      :navigation="'true'"
-      pagination="true"
-      scrollbar="true"
+    <swiper
+      :slides-per-view="1"
+      :space-between="50"
+      :loop="true"
+      navigation
+      :pagination="{ clickable: true }"
+      :modules="modules"
+      :autoplay="{
+        delay: 5000,
+        disableOnInteraction: true,
+      }"
     >
-      <swiper-slide v-for="bn in banners">
+      <swiper-slide v-for="bn in banners" :key="bn.id">
         <a
           :href="
             lang == 'th'
@@ -264,8 +265,7 @@ button.splide__pagination__page.is-active {
           />
         </a>
       </swiper-slide>
-    </swiper-container>
-
+    </swiper>
     <!-- End tp-Banner -->
 
     <!-- Icon -->
@@ -286,13 +286,11 @@ button.splide__pagination__page.is-active {
           </VAvatar>
 
           <VCardItem class="text-center p-0">
-            <!-- <VCardTitle class="card-text-icon-home">{{ ci.title }}</VCardTitle> -->
             <span class="card-text-icon-home">{{ ci.title }}</span>
           </VCardItem>
         </VCard>
       </VCol>
     </VRow>
-
     <!-- End Icon -->
 
     <!-- Main -->
@@ -326,7 +324,9 @@ button.splide__pagination__page.is-active {
                   :key="nw.id"
                 >
                   <VCard
-                    @click="$router.push({ name: 'news-id',params: {id: nw.id} })"
+                    @click="
+                      $router.push({ name: 'news-id', params: { id: nw.id } })
+                    "
                     class="news-card cursor-pointer"
                   >
                     <VImg
@@ -348,7 +348,11 @@ button.splide__pagination__page.is-active {
                       <VSpacer />
                       <span class="news-tag"
                         ><VIcon icon="tabler-tag" />
-                        {{ lang == "th" ? nw.news_type_title : nt.news_type_title_en }}
+                        {{
+                          lang == "th"
+                            ? nw.news_type_title
+                            : nt.news_type_title_en
+                        }}
                       </span>
                     </VCardActions>
                   </VCard>
