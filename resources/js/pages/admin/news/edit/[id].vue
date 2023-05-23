@@ -29,6 +29,11 @@ const router = useRouter();
 // Uppy
 const r = (Math.random() + 1).toString(36).substring(7);
 
+let baseUrl = "http://143.198.208.110:8115/api";
+if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+  baseUrl = "http://localhost:8115/api";
+}
+
 const uppy = new Uppy({
   meta: { news_id: route.params.id, secret_key: r, news_gallery_id: null },
   debug: true,
@@ -36,7 +41,7 @@ const uppy = new Uppy({
     allowedFileTypes: ["image/*", "video/*"],
   },
 }).use(XHRUpload, {
-  endpoint: "http://localhost:8115/api/news-gallery/uppy",
+  endpoint: baseUrl + "/news-gallery/uppy",
   fieldName: "file",
 });
 
@@ -306,11 +311,11 @@ const initFroala = () => {
     key: "enter-your-license-key-here",
     disableRightClick: true,
 
-    imageUploadURL: "http://localhost:8115/api/froala/image",
+    imageUploadURL: baseUrl + "/froala/image",
     // imageAllowedTypes: ['jpeg', 'jpg', 'png'],
 
-    fileUploadURL: "http://localhost:8115/api/froala/document",
-    videoUploadURL: "http://localhost:8115/api/froala/video",
+    fileUploadURL: baseUrl + "/froala/document",
+    videoUploadURL: baseUrl + "/froala/video",
 
     // fileUpload: false,
     // imageUpload: false,
@@ -389,11 +394,11 @@ const initFroala = () => {
     key: "enter-your-license-key-here",
     disableRightClick: true,
 
-    imageUploadURL: "http://localhost:8115/api/froala/image",
+    imageUploadURL: baseUrl + "/froala/image",
     // imageAllowedTypes: ['jpeg', 'jpg', 'png'],
 
-    fileUploadURL: "http://localhost:8115/api/froala/document",
-    videoUploadURL: "http://localhost:8115/api/froala/video",
+    fileUploadURL: baseUrl + "/froala/document",
+    videoUploadURL: baseUrl + "/froala/video",
 
     // fileUpload: false,
     // imageUpload: false,
