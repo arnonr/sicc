@@ -118,6 +118,29 @@ div.admin-table {
 .layout-horizontal-nav, .layout-nav-type-vertical .layout-vertical-nav {
     color: #000;
 }
+
+.v-theme--light h1, 
+.v-theme--light h2, 
+.v-theme--light h3,
+.v-theme--light h4,
+.v-theme--light h5,
+.v-theme--light h6,
+.v-theme--light .text-h1, 
+.v-theme--light .text-h2, 
+.v-theme--light .text-h3, 
+.v-theme--light .text-h4, 
+.v-theme--light .text-h5, 
+.v-theme--light .text-h6, 
+.v-theme--light .text-button, 
+.v-theme--light .text-overline, 
+.v-theme--light .v-card-title {
+    color: #000;
+}
+
+.v-theme--light p{
+    color: #000;
+}
+
 // text-decoration: underline;
 
 // .layout-horizontal-nav .nav-link a::before {

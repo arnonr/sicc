@@ -15,5 +15,8 @@ export const useNewsStore = defineStore("NewsStore", {
     fetchNewsTypes(params) {
       return axios.get("/news-type", { params });
     },
+    fetchNewsGallery(params) {
+      return axios.get("/news-gallery", { params });
+    },
   },
 });

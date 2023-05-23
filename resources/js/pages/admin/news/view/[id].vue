@@ -184,12 +184,12 @@ fetchNewsGallery();
   width: 25%;
   height: 100%;
   opacity: 0.4;
+  cursor: pointer;
 }
 
 .mySwiper .swiper-slide-thumb-active {
   opacity: 1;
 }
-
 </style>
 
 <template>

@@ -227,6 +227,10 @@ const fetchNews = () => {
 .swiper-pagination-bullet-active {
   background: #ffcb05;
 }
+
+.v-theme--light > .v-application__wrap > .layout-wrapper {
+  background-color: #fff !important;
+}
 </style>
 <!--  -->
 <template>

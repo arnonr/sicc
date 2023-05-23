@@ -83,10 +83,6 @@ button.splide__pagination__page.is-active {
     contrast(99%);
 }
 
-// .v-card--variant-elevated {
-//     box-shadow: none;
-// }
-
 .news-tag {
   color: #bbb;
   font-size: 0.7em;
@@ -94,6 +90,10 @@ button.splide__pagination__page.is-active {
 
 .news-card {
   border: solid 1px #ddd;
+}
+
+.v-theme--light > .v-application__wrap > .layout-wrapper {
+  background-color: #fff !important;
 }
 </style>
 <template>
@@ -119,7 +119,7 @@ button.splide__pagination__page.is-active {
       </VRow>
 
       <VRow class="mt-16">
-        <VCol cols="12" sm="12" md="12" style="font-size: 1.3rem">
+        <VCol cols="12" sm="12" md="12" style="font-size: 1.1rem">
           <div
             v-html="lang == 'th' ? contactUs.detail : contactUs.detail_en"
           ></div>

@@ -3,20 +3,48 @@ import dayjs from "dayjs";
 import "dayjs/locale/th";
 import buddhistEra from "dayjs/plugin/buddhistEra";
 import { useRoute, useRouter } from "vue-router";
+
+import { FreeMode, Navigation, Pagination, Scrollbar, Thumbs } from "swiper";
+import "swiper/css";
+import "swiper/css/free-mode";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/scrollbar";
+import "swiper/css/thumbs";
+import { Swiper, SwiperSlide } from "swiper/vue";
+
 import { useDisplay } from "vuetify";
 import { useNewsStore } from "./useNewsStore";
-const { mobile } = useDisplay();
+// End Import
 
+dayjs.extend(buddhistEra);
+const newsStore = useNewsStore();
+const { t } = useI18n();
+const { mobile } = useDisplay();
 const route = useRoute();
 const router = useRouter();
-dayjs.extend(buddhistEra);
-const { t } = useI18n();
+const newsGalleries = ref([{}, {}, {}, {}]);
+const modules = [Navigation, Pagination, Scrollbar, FreeMode, Thumbs];
 const lang = ref("th");
+
+const isOverlay = ref(false);
+const isSnackbarVisible = ref(false);
+const snackbarText = ref("");
+const snackbarColor = ref("success");
+const isDialogVisible = ref(false);
+const thumbsSwiper = ref(null);
+
+onMounted(() => {
+  window.scrollTo(0, 0);
+});
+
 if (localStorage.getItem("currentLang") === "en") {
   lang.value = localStorage.getItem("currentLang");
 }
 
-const newsStore = useNewsStore();
+const setThumbsSwiper = (swiper) => {
+  thumbsSwiper.value = swiper;
+};
 
 const item = ref({
   id: null,
@@ -28,11 +56,6 @@ const item = ref({
   news_file: [],
   news_file_en: [],
 });
-const isOverlay = ref(false);
-const isSnackbarVisible = ref(false);
-const snackbarText = ref("");
-const snackbarColor = ref("success");
-const isDialogVisible = ref(false);
 
 if (localStorage.getItem("added") == 1) {
   snackbarText.value = "Added News";
@@ -64,21 +87,15 @@ newsStore
     isOverlay.value = false;
   });
 
-const onConfirmDelete = () => {
-  isDialogVisible.value = true;
-};
-
-const onDelete = (id) => {
+const fetchNewsGallery = () => {
   newsStore
-    .deleteNews({
-      id: id,
+    .fetchNewsGallery({
+      news_id: route.params.id,
     })
-    .then((response) => {
+    .then(async (response) => {
       if (response.data.message == "success") {
-        localStorage.setItem("deleted", 1);
-        router.push({
-          path: "/admin/news",
-        });
+        newsGalleries.value = response.data.data;
+        isOverlay.value = false;
       } else {
         console.log("error");
       }
@@ -88,14 +105,77 @@ const onDelete = (id) => {
       isOverlay.value = false;
     });
 };
-
-onMounted(() => {
-  window.scrollTo(0, 0);
-});
+fetchNewsGallery();
 </script>
 <style lang="scss">
 .mw-120 {
   min-width: 120px;
+}
+
+.swiper-button-prev:after,
+.swiper-rtl .swiper-button-next:after {
+  color: #000;
+  font-size: 1.5em;
+  margin-left: -3px;
+  font-weight: 800;
+}
+
+.swiper-button-next:after,
+.swiper-rtl .swiper-button-next:after {
+  color: #000;
+  font-size: 1.5em;
+  margin-left: 3px;
+  font-weight: 800;
+}
+
+.swiper-button-next {
+  border-radius: 100% !important;
+  width: 2.8em;
+  background: #ffcb05;
+  transform: scale(0.7);
+  @media only screen and (max-width: 600px) {
+    transform: scale(0.4);
+  }
+}
+
+.swiper-button-prev {
+  border-radius: 100% !important;
+  width: 2.8em;
+  margin-left: -2px;
+  background: #ffcb05;
+  transform: scale(0.7);
+  @media only screen and (max-width: 600px) {
+    transform: scale(0.4);
+  }
+}
+.swiper-button-next,
+.swiper-rtl .swiper-button-prev {
+  right: var(--swiper-navigation-sides-offset, 0px);
+}
+
+.swiper-button-prev,
+.swiper-rtl .swiper-button-next {
+  left: var(--swiper-navigation-sides-offset, 0px);
+}
+
+.swiper-pagination-bullet-active {
+  background: #ffcb05;
+}
+
+// thumb
+.mySwiper .swiper-slide {
+  width: 25%;
+  height: 100%;
+  // opacity: 0.4;
+  cursor: pointer;
+}
+
+.mySwiper .swiper-slide-thumb-active {
+  opacity: 1;
+}
+
+.v-theme--light > .v-application__wrap > .layout-wrapper {
+  background-color: #fff !important;
 }
 </style>
 
@@ -122,15 +202,48 @@ onMounted(() => {
             </span>
           </div>
           <div class="mb-6" align="center">
-            <VImg
-              align="center"
-              :src="lang == 'th' ? item.news_file : item.news_en_file"
-              width="800"
-            />
+            <div :style="mobile ? 'padding: 2em;' : 'padding: 2em;width:80%;'">
+              <!-- tp-Banner -->
+              <swiper
+                :slidesPerView="1"
+                :spaceBetween="10"
+                :loop="true"
+                :thumbs="{ swiper: thumbsSwiper }"
+                :navigation="true"
+                :modules="modules"
+                :autoplay="{
+                  delay: 5000,
+                  disableOnInteraction: true,
+                }"
+                class="mySwiper2"
+              >
+                <swiper-slide v-for="(ng, index) in newsGalleries" :key="index">
+                  <img :src="ng.news_gallery_file" style="width: 100%" />
+                </swiper-slide>
+              </swiper>
+
+              <swiper
+                @swiper="setThumbsSwiper"
+                :spaceBetween="10"
+                :slidesPerView="4"
+                :freeMode="true"
+                :watchSlidesProgress="true"
+                :modules="modules"
+                class="mySwiper"
+              >
+                <swiper-slide v-for="(ng, index) in newsGalleries" :key="index">
+                  <img :src="ng.news_gallery_file" style="width: 100%" />
+                </swiper-slide>
+              </swiper>
+            </div>
           </div>
           <div
             v-html="lang == 'th' ? item.detail : item.detail_en"
-            :style="mobile ? '' : 'padding-left:10em;padding-right:10em;'"
+            :style="
+              mobile
+                ? 'text-align: justify;'
+                : 'padding-left:10em;padding-right:10em;font-size:1.1em;'
+            "
           ></div>
         </VCol>
       </VRow>

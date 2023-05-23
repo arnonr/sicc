@@ -129,6 +129,10 @@ button.splide__pagination__page.is-active {
 .news-card {
   border: solid 1px #ddd;
 }
+
+.v-theme--light > .v-application__wrap > .layout-wrapper {
+  background-color: #fff !important;
+}
 </style>
 <template>
   <div>

@@ -2,10 +2,21 @@
 import { useDisplay } from "vuetify";
 import { useAboutUsStore } from "./useAboutUsStore";
 
+import { useThemeConfig } from "@core/composable/useThemeConfig";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
+const { theme } = useThemeConfig();
+
+// const backgroundColor = ref("");
+// if (theme.value === "light") {
+//   backgroundColor.value = "font-size: 1.1rem;backgroud-color:#fff;";
+//   console.log(backgroundColor.value)
+//   document.getElementsByClassName('layout-wrapper').style.backgroundColor = "#fff";
+// }else{
+//   console.log("FREEDOm")
+// }
 
 // import { defineComponent } from "vue";
 const aboutUsStore = useAboutUsStore();
@@ -100,38 +111,42 @@ button.splide__pagination__page.is-active {
 .news-card {
   border: solid 1px #ddd;
 }
+
+.v-theme--light > .v-application__wrap > .layout-wrapper {
+  background-color: #fff !important;
+}
 </style>
 <template>
   <div>
     <!-- Main -->
     <main class="layout-page-content mt-16 mb-6">
-
       <VContainer>
-      <VRow>
-        <VCol
-          cols="12"
-          sm="12"
-          md="12"
-          style="border-left: solid 0.7em #ffcb05"
-        >
-          <h2>
-            {{ lang == "th" ? aboutUs.title : aboutUs.title_en }}
-          </h2>
-          <h2 style="color: #ffcb05">
-            {{ t("Scientific Instrument") }}
-            <br />
-            {{ t("and High Performance Computing Center") }}
-          </h2>
-        </VCol>
-      </VRow>
+        <VRow>
+          <VCol
+            cols="12"
+            sm="12"
+            md="12"
+            style="border-left: solid 0.7em #ffcb05"
+          >
+            <h2>
+              {{ lang == "th" ? aboutUs.title : aboutUs.title_en }}
+            </h2>
+            <h2 style="color: #ffcb05">
+              {{ t("Scientific Instrument") }}
+              <br />
+              {{ t("and High Performance Computing Center") }}
+            </h2>
+          </VCol>
+        </VRow>
 
-      <VRow class="mt-6">
-        <VCol cols="12" sm="12" md="12" style="font-size: 1.3rem;">
-          <div v-html="lang == 'th' ? aboutUs.detail : aboutUs.detail_en">
-          </div>
-        </VCol>
-      </VRow>
-    </VContainer>
+        <VRow class="mt-6">
+          <VCol cols="12" sm="12" md="12" style="font-size: 1.1rem">
+            <div
+              v-html="lang == 'th' ? aboutUs.detail : aboutUs.detail_en"
+            ></div>
+          </VCol>
+        </VRow>
+      </VContainer>
     </main>
   </div>
 </template>
