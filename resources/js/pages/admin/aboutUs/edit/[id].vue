@@ -5,10 +5,10 @@ import { useAboutUsStore } from "../useAboutUsStore";
 
 import "froala-editor/css/froala_editor.pkgd.min.css";
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min.js";
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
-const router = useRouter()
+const router = useRouter();
 const aboutUsStore = useAboutUsStore();
 
 const item = ref({
@@ -73,6 +73,10 @@ const onSubmit = () => {
   });
 };
 
+let baseUrl = "http://143.198.208.110:8115/api";
+if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+  baseUrl = "http://localhost:8115/api";
+}
 
 const initFroala = () => {
   new FroalaEditor("#detail", {
@@ -127,11 +131,11 @@ const initFroala = () => {
     key: "enter-your-license-key-here",
     disableRightClick: true,
 
-    imageUploadURL: "http://localhost:8115/api/froala/image",
+    imageUploadURL: baseurl + "/froala/image",
     imageAllowedTypes: ["jpeg", "jpg", "png"],
 
-    fileUploadURL: "http://localhost:8115/api/froala/document",
-    videoUploadURL: "http://localhost:8115/api/froala/video",
+    fileUploadURL: baseurl + "/froala/document",
+    videoUploadURL: baseurl + "/froala/video",
 
     // fileUpload: false,
     // imageUpload: false,
@@ -210,11 +214,11 @@ const initFroala = () => {
     key: "enter-your-license-key-here",
     disableRightClick: true,
 
-    imageUploadURL: "http://localhost:8115/api/froala/image",
+    imageUploadURL: baseurl + "/froala/image",
     // imageAllowedTypes: ['jpeg', 'jpg', 'png'],
 
-    fileUploadURL: "http://localhost:8115/api/froala/document",
-    videoUploadURL: "http://localhost:8115/api/froala/video",
+    fileUploadURL: baseurl + "/froala/document",
+    videoUploadURL: baseurl + "/froala/video",
 
     // fileUpload: false,
     // imageUpload: false,

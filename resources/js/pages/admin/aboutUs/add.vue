@@ -53,6 +53,11 @@ const onSubmit = () => {
   });
 };
 
+let baseUrl = "http://143.198.208.110:8115/api";
+if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
+  baseUrl = "http://localhost:8115/api";
+}
+
 const initFroala = () => {
   new FroalaEditor("#detail", {
     height: 300,
@@ -106,11 +111,11 @@ const initFroala = () => {
     key: "enter-your-license-key-here",
     disableRightClick: true,
 
-    imageUploadURL: "http://localhost:8115/api/froala/image",
+    imageUploadURL: baseUrl + "/froala/image",
     imageAllowedTypes: ["jpeg", "jpg", "png"],
 
-    fileUploadURL: "http://localhost:8115/api/froala/document",
-    videoUploadURL: "http://localhost:8115/api/froala/video",
+    fileUploadURL: baseUrl + "/froala/document",
+    videoUploadURL: baseUrl + "/froala/video",
 
     // fileUpload: false,
     // imageUpload: false,
@@ -186,11 +191,11 @@ const initFroala = () => {
     key: "enter-your-license-key-here",
     disableRightClick: true,
 
-    imageUploadURL: "http://localhost:8115/api/froala/image",
+    imageUploadURL: baseUrl + "/froala/image",
     // imageAllowedTypes: ['jpeg', 'jpg', 'png'],
 
-    fileUploadURL: "http://localhost:8115/api/froala/document",
-    videoUploadURL: "http://localhost:8115/api/froala/video",
+    fileUploadURL: baseUrl + "/froala/document",
+    videoUploadURL: baseUrl + "/froala/video",
 
     // fileUpload: false,
     // imageUpload: false,
