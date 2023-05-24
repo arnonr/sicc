@@ -218,7 +218,7 @@ const onSubmit = () => {
 
           news_en_file:
             item.value.news_en_file != null ? item.value.news_en_file[0] : null,
-            
+
           detail: item.value.detail.replace(
             '<p data-f-id="pbf" style="text-align: center; font-size: 14px; margin-top: 30px; opacity: 0.65; font-family: sans-serif;">Powered by <a href="https://www.froala.com/wysiwyg-editor?pb=1" title="Froala Editor">Froala Editor</a></p>',
             ""
@@ -436,6 +436,12 @@ const initFroala = () => {
 
 onMounted(() => {
   // initFroala();
+  let fr = document.querySelectorAll(
+    '[href="https://www.froala.com/wysiwyg-editor?k=u"]'
+  );
+  for (let i = 0; i < fr.length; ++i) {
+    fr[i].style.display = "none";
+  }
   window.scrollTo(0, 0);
 });
 </script>
