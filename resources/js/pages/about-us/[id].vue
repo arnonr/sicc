@@ -115,6 +115,10 @@ button.splide__pagination__page.is-active {
 .v-theme--light > .v-application__wrap > .layout-wrapper {
   background-color: #fff !important;
 }
+
+.v-theme--light .div-detail {
+  color: #000;
+}
 </style>
 <template>
   <div>
@@ -142,6 +146,7 @@ button.splide__pagination__page.is-active {
         <VRow class="mt-6">
           <VCol cols="12" sm="12" md="12" style="font-size: 1.1rem">
             <div
+              class="div-detail"
               v-html="lang == 'th' ? aboutUs.detail : aboutUs.detail_en"
             ></div>
           </VCol>

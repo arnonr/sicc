@@ -131,11 +131,11 @@ const initFroala = () => {
     key: "enter-your-license-key-here",
     disableRightClick: true,
 
-    imageUploadURL: baseurl + "/froala/image",
+    imageUploadURL: baseUrl + "/froala/image",
     imageAllowedTypes: ["jpeg", "jpg", "png"],
 
-    fileUploadURL: baseurl + "/froala/document",
-    videoUploadURL: baseurl + "/froala/video",
+    fileUploadURL: baseUrl + "/froala/document",
+    videoUploadURL: baseUrl + "/froala/video",
 
     // fileUpload: false,
     // imageUpload: false,
@@ -214,11 +214,11 @@ const initFroala = () => {
     key: "enter-your-license-key-here",
     disableRightClick: true,
 
-    imageUploadURL: baseurl + "/froala/image",
+    imageUploadURL: baseUrl + "/froala/image",
     // imageAllowedTypes: ['jpeg', 'jpg', 'png'],
 
-    fileUploadURL: baseurl + "/froala/document",
-    videoUploadURL: baseurl + "/froala/video",
+    fileUploadURL: baseUrl + "/froala/document",
+    videoUploadURL: baseUrl + "/froala/video",
 
     // fileUpload: false,
     // imageUpload: false,
