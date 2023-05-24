@@ -1,8 +1,8 @@
 <script setup>
-import icon1 from "@images/icons/home/icon1.png";
-import icon2 from "@images/icons/home/icon2.png";
-import icon3 from "@images/icons/home/icon3.png";
-import icon4 from "@images/icons/home/icon4.png";
+import icon1 from "@images/icons/home/icon_new1.png";
+import icon2 from "@images/icons/home/icon_new2.png";
+import icon3 from "@images/icons/home/icon_new3.png";
+import icon4 from "@images/icons/home/icon_new4.png";
 
 import "swiper/css";
 import "swiper/css/navigation";
