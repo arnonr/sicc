@@ -12,7 +12,7 @@ import "swiper/css/scrollbar";
 import { Navigation, Pagination, Scrollbar } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { useDisplay } from "vuetify";
-import { useHomeStore } from "./useHomeStore";
+import { useHomeStore } from "../useHomeStore";
 // End Import
 
 const homeStore = useHomeStore();
@@ -22,8 +22,28 @@ const modules = [Navigation, Pagination, Scrollbar];
 const isOverlay = ref(true);
 // 👉 Fetching Banner
 const banners = ref([{}, {}]);
-const news = ref([]);
-const newsTypes = ref([]);
+const news = ref([
+  {
+    id: 1,
+    title: "กล้องจุลทรรศน์อิเล็กตรอนแบบส่องกราด : FEI รุ่น QUANTA 450",
+    news_file: 'http://localhost:8115/storage/equipment/1.png',
+    news_file: 'http://localhost:8115/storage/equipment/1.png',
+    title_en: "Scanning Electron Microscope",
+    news_type_id: 1
+  },
+]);
+const newsTypes = ref([
+  {
+    id: 1,
+    title: "Scanning Instrument",
+    title_en: "Scanning Instrument",
+  },
+  {
+    id: 2,
+    title: "Scanning Instrument2",
+    title_en: "Scanning Instrument2",
+  },
+]);
 const currentTab = ref(0);
 const lang = ref("th");
 
@@ -40,104 +60,134 @@ if (localStorage.getItem("currentLang") === "en") {
   lang.value = localStorage.getItem("currentLang");
 }
 
-const fetchBanners = () => {
-  isOverlay.value = true;
-  homeStore
-    .fetchBanners({
-      is_publish: 1,
-    })
-    .then((response) => {
-      if (response.data.message == "success") {
-        banners.value = response.data.data;
-        isOverlay.value = false;
-        // options.value.type = "loop";
-      } else {
-        console.log("error");
+// const fetchBanners = () => {
+//   isOverlay.value = true;
+//   homeStore
+//     .fetchBanners({
+//       is_publish: 1,
+//     })
+//     .then((response) => {
+//       if (response.data.message == "success") {
+//         banners.value = response.data.data;
+//         isOverlay.value = false;
+//         // options.value.type = "loop";
+//       } else {
+//         console.log("error");
+//       }
+//     })
+//     .catch((error) => {
+//       console.error(error);
+//       isOverlay.value = false;
+//     });
+// };
+// fetchBanners();
+
+// const fetchNewsTypes = () => {
+//   isOverlay.value = true;
+//   homeStore
+//     .fetchNewsTypes({
+//       is_publish: 1,
+//     })
+//     .then((response) => {
+//       if (response.data.message == "success") {
+//         newsTypes.value = response.data.data;
+
+//         newsTypes.value.unshift({
+//           id: 99,
+//           title: "ข่าวทั้งหมด",
+//           title_en: "All News",
+//         });
+//         fetchNews();
+//         isOverlay.value = false;
+//         // options.value.type = "loop";
+//       } else {
+//         console.log("error");
+//       }
+//     })
+//     .catch((error) => {
+//       console.error(error);
+//       isOverlay.value = false;
+//     });
+// };
+// fetchNewsTypes();
+
+// const fetchNews = () => {
+//   isOverlay.value = true;
+//   homeStore
+//     .fetchNews({
+//       is_publish: 1,
+//     })
+//     .then((response) => {
+//       if (response.data.message == "success") {
+//         news.value = response.data.data;
+//         newsTypes.value = newsTypes.value.map((it) => {
+//           if (it.id == 99) {
+//             it.news = news.value.filter((x) => {
+//               let isEng = true;
+//               if (lang.value != "th") {
+//                 if (x.title_en == null || x.title_en == "") {
+//                   isEng = false;
+//                 }
+//               }
+//               return isEng;
+//             });
+
+//             it.news = it.news.slice(0, 8);
+//           } else {
+//             it.news = news.value.filter((x) => {
+//               let isEng = true;
+//               if (lang.value != "th") {
+//                 if (x.title_en == null || x.title_en == "") {
+//                   isEng = false;
+//                 }
+//               }
+//               return x.news_type_id == it.id && isEng;
+//             });
+
+//             it.news = it.news.slice(0, 8);
+//           }
+//           return it;
+//         });
+//         isOverlay.value = false;
+//       } else {
+//         console.log("error");
+//       }
+//     })
+//     .catch((error) => {
+//       console.error(error);
+//       isOverlay.value = false;
+//     });
+// };
+
+newsTypes.value = newsTypes.value.map((it) => {
+  if (it.id == 99) {
+    it.news = news.value.filter((x) => {
+      let isEng = true;
+      if (lang.value != "th") {
+        if (x.title_en == null || x.title_en == "") {
+          isEng = false;
+        }
       }
-    })
-    .catch((error) => {
-      console.error(error);
-      isOverlay.value = false;
+      return isEng;
     });
-};
-fetchBanners();
 
-const fetchNewsTypes = () => {
-  isOverlay.value = true;
-  homeStore
-    .fetchNewsTypes({
-      is_publish: 1,
-    })
-    .then((response) => {
-      if (response.data.message == "success") {
-        newsTypes.value = response.data.data;
-
-        newsTypes.value.unshift({
-          id: 99,
-          title: "ข่าวทั้งหมด",
-          title_en: "All News",
-        });
-        fetchNews();
-        isOverlay.value = false;
-        // options.value.type = "loop";
-      } else {
-        console.log("error");
+    it.news = it.news.slice(0, 8);
+  } else {
+    it.news = news.value.filter((x) => {
+      let isEng = true;
+      if (lang.value != "th") {
+        if (x.title_en == null || x.title_en == "") {
+          isEng = false;
+        }
       }
-    })
-    .catch((error) => {
-      console.error(error);
-      isOverlay.value = false;
+      return x.news_type_id == it.id && isEng;
     });
-};
-fetchNewsTypes();
 
-const fetchNews = () => {
-  isOverlay.value = true;
-  homeStore
-    .fetchNews({
-      is_publish: 1,
-    })
-    .then((response) => {
-      if (response.data.message == "success") {
-        news.value = response.data.data;
-        newsTypes.value = newsTypes.value.map((it) => {
-          if (it.id == 99) {
-            it.news = news.value.filter((x) => {
-              let isEng = true;
-              if (lang.value != "th") {
-                if (x.title_en == null || x.title_en == "") {
-                  isEng = false;
-                }
-              }
-              return isEng;
-            });
+    it.news = it.news.slice(0, 8);
+  }
+  return it;
+});
 
-            it.news = it.news.slice(0, 8);
-          } else {
-            it.news = news.value.filter((x) => {
-              let isEng = true;
-              if (lang.value != "th") {
-                if (x.title_en == null || x.title_en == "") {
-                  isEng = false;
-                }
-              }
-              return x.news_type_id == it.id && isEng;
-            });
-
-            it.news = it.news.slice(0, 8);
-          }
-          return it;
-        });
-        isOverlay.value = false;
-      } else {
-        console.log("error");
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-      isOverlay.value = false;
-    });
-};
 </script>
 
 <style lang="scss">
@@ -240,76 +290,11 @@ const fetchNews = () => {
 <!--  -->
 <template>
   <div>
-    <!-- tp-Banner -->
-    <swiper
-      :slides-per-view="1"
-      :space-between="50"
-      :loop="true"
-      navigation
-      :pagination="{ clickable: true }"
-      :modules="modules"
-      :autoplay="{
-        delay: 5000,
-        disableOnInteraction: true,
-      }"
-    >
-      <swiper-slide v-for="bn in banners" :key="bn.id">
-        <a
-          :href="
-            lang == 'th'
-              ? bn.link_url != 'null'
-                ? bn.link_url
-                : '#'
-              : bn.link_url_en != 'null'
-              ? bn.link_url_en
-              : '#'
-          "
-          :alt="lang == 'th' ? bn.title : bn.title_en"
-          :title="lang == 'th' ? bn.title : bn.title_en"
-        >
-          <img
-            :src="lang == 'th' ? bn.banner_file : bn.banner_en_file"
-            :alt="lang == 'th' ? bn.banner_title : bn.banner_en_title"
-            style="width: 100%;"
-          />
-        </a>
-      </swiper-slide>
-    </swiper>
-    <!-- End tp-Banner -->
-
-    <!-- Icon -->
-    <VRow
-      :class="
-        mobile
-          ? 'pt-10 pb-8'
-          : 'pt-10 pb-8 row-icon-home bg-top-footer-background'
-      "
-      justify="center"
-    >
-      <VCol cols="12" sm="6" md="2" class="p-0" v-for="ci in cardIcon">
-        <VCard
-          class="text-center card-icon-home cursor-pointer"
-          @click="$router.push({ name: 'equipment' })"
-        >
-          <!-- <VImg :src="pages1" cover /> -->
-          <VAvatar size="150">
-            <!-- <span class="text-h5 text-white">PI</span> -->
-            <VImg :src="ci.icon" class="img-icon-home" />
-          </VAvatar>
-
-          <VCardItem class="text-center p-0">
-            <span class="card-text-icon-home">{{ ci.title }}</span>
-          </VCardItem>
-        </VCard>
-      </VCol>
-    </VRow>
-    <!-- End Icon -->
-
     <!-- Main -->
     <main class="layout-page-content mt-6 mb-6">
       <v-row>
         <v-col>
-          <h2>{{ t("News") }}</h2>
+          <h2>Equipment & Rate</h2>
         </v-col>
       </v-row>
       <VRow>
@@ -337,7 +322,7 @@ const fetchNews = () => {
                 >
                   <VCard
                     @click="
-                      $router.push({ name: 'news-id', params: { id: nw.id } })
+                      $router.push({ name: 'equipment-id', params: { id: nw.id } })
                     "
                     class="news-card cursor-pointer"
                   >
@@ -355,7 +340,7 @@ const fetchNews = () => {
                       <VBtn
                         @click="isCardDetailsVisible = !isCardDetailsVisible"
                       >
-                        {{ t("Details") }} <VIcon icon="tabler-arrow-right" />
+                      ดูข้อมูล <VIcon icon="tabler-arrow-right" />
                       </VBtn>
                       <VSpacer />
                       <span class="news-tag"
@@ -375,19 +360,6 @@ const fetchNews = () => {
           <!-- </VCard> -->
         </VCol>
       </VRow>
-
-      <v-row>
-        <v-col>
-          <VBtn
-            color="primary"
-            class="float-right"
-            variant="flat"
-            @click="$router.push({ name: 'news' })"
-          >
-            <VIcon start icon="tabler-news" /> {{ t("All News") }}
-          </VBtn>
-        </v-col>
-      </v-row>
     </main>
   </div>
 </template>
